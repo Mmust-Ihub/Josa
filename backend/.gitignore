@@ -1,0 +1,14 @@
+venv
+env
+__pycache__
+/instance
+test1.py
+require.txt
+# .flaskenv
+tinify/
+.env
+test.py
+.pytest_cache
+*.db
+*.sqlite
+.flaskenv
