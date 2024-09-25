@@ -1,0 +1,61 @@
+services:
+  backend:
+    build: ./backend
+    expose:
+      - 5000
+    restart: always
+    command: gunicorn --bind 0.0.0.0:5000 --workers 4 --threads 100 manage:app
+    env_file:
+      - ./backend/.env
+    depends_on:
+      - db
+    environment:
+      DATABASE: postgres
+      DATABASE_URL: postgresql://admin:admin@db:5432
+    networks:
+      - josa
+    stdin_open: true
+    tty: true
+
+  frontend:
+    build: ./frontend
+    image: frontend
+    container_name: frontend-cont
+    restart: always
+    ports:
+      - "80:80"
+    networks:
+      - josa
+    depends_on:
+      - backend
+    stdin_open: true
+    tty: true
+
+  db:
+    image: postgres:13
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    environment:
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=admin
+
+  worker:
+    build: ./backend
+    command: ./celery.sh
+    env_file:
+      - ./backend/.env
+    depends_on:
+      - backend
+      - redis
+
+  redis:
+    image: redis:6-alpine
+
+volumes:
+  postgres_data: {}
+
+networks:
+  josa:
+    driver: bridge

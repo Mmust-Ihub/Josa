@@ -1,0 +1,53 @@
+version: "3.8"
+
+services:
+  web:
+    build: .
+    image: web
+    container_name: web
+    ports:
+      - 5004:5000
+    command: python3 manage.py run -h 0.0.0.0
+    volumes:
+      - .:/usr/src/app
+    environment:
+      - FLASK_DEBUG=1
+      - APP_SETTINGS=project.server.config.DevelopmentConfig
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+
+  worker:
+    build: .
+    command: celery -A project.server.tasks.celery worker --loglevel=info --logfile=project/logs/celery.log
+    volumes:
+      - .:/usr/src/app
+    environment:
+      - FLASK_DEBUG=1
+      - APP_SETTINGS=project.server.config.DevelopmentConfig
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+
+    depends_on:
+      - web
+      - redis
+
+  redis:
+    image: redis:6-alpine
+
+  flower:
+    build: .
+    ports:
+      - 5555:5555
+      # When running it on a docker container, make sure to replace the host.
+    command: celery -A project.server.tasks.celery flower --port=5555 --broker=redis://localhost:6379
+    volumes:
+      - .:/usr/src/app
+    environment:
+      - FLASK_DEBUG=1
+      - APP_SETTINGS=project.server.config.DevelopmentConfig
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+    depends_on:
+      - web 
+      - redis 
+      - worker

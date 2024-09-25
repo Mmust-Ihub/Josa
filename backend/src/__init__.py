@@ -11,12 +11,7 @@ from src.utils import utils
 
 # from src.views.admin_profile import admin
 
-
-""" A function for creating an application """
-
-
 def create_app(config="dev"):
-
     app = Flask(__name__)
     app.config.from_object(config_dict[config])
     db.init_app(app=app)
