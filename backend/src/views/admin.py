@@ -7,19 +7,19 @@ from src.models.database import Post, Comment
 from src.celery.task import get_status, upload_image
 from werkzeug.utils import secure_filename
 from decouple import config
+
 admin = Blueprint(
     "admin",
     __name__,
 )
 UPLOAD_DIR = config("UPLOAD_DIR")
 
-""" An endpoint to get the total number of posts owned by admin """
-
 
 @admin.route("/total/posts")
 @cross_origin()
 @jwt_required()
 def get_admin_total_posts():
+    """An endpoint to get the total number of posts owned by admin"""
     user_id = get_jwt_identity()
     total_posts = get_total_number_of_post(user_id)
     if total_posts:
@@ -28,13 +28,11 @@ def get_admin_total_posts():
     return 0, 200
 
 
-""" An endpoint to get the total number of comments owned by admin """
-
-
 @admin.route("/total/comments")
 @cross_origin()
 @jwt_required()
 def get_admin_total_comments():
+    """An endpoint to get the total number of comments owned by admin"""
     user_id = get_jwt_identity()
     news_comments = get_posts_and_comments("news", user_id)[1]
     business_comments = get_posts_and_comments("business", user_id)[1]
@@ -47,13 +45,11 @@ def get_admin_total_comments():
     return str(total_comments), 200
 
 
-""" An endpoint to get the latest five news posts """
-
-
 @admin.route("/news/latest")
 @cross_origin()
 @jwt_required()
 def get_latest_five_news_posts():
+    """An endpoint to get the latest five news posts"""
     user_id = get_jwt_identity()
     latest_posts = (
         Post.query.filter_by(user_id=user_id)
@@ -77,12 +73,10 @@ def get_latest_five_news_posts():
     return serialized
 
 
-""" An endpoint to update the posts based on the category dashboard """
-
-
 @admin.route("/posts/update/<string:slug>", methods=["PUT"])
 @cross_origin()
 def update_post_in_latest_news(slug):
+    """An endpoint to update the posts based on the category dashboard"""
     success_msg = "post updated successfully"
     error_msg = "invalid id passed"
     data = request.get_json()
@@ -93,12 +87,10 @@ def update_post_in_latest_news(slug):
         return jsonify({"error": error_msg}), 404
 
 
-""" An endpoint to delete the five latest posts in admin homepage """
-
-
 @admin.route("/news/latest/delete/<string:slug>", methods=["DELETE"])
 @cross_origin()
 def delete_post_in_latest(slug):
+    """An endpoint to delete the five latest posts in admin homepage"""
     post = Post.query.filter_by(slug=slug).first()
     if post:
         post.remove_from_db()
@@ -107,26 +99,22 @@ def delete_post_in_latest(slug):
     return {"error": f"Image with id {id} not found"}, 404
 
 
-""" An endpoint to get the total number of news posts owned by author """
-
-
 @admin.route("/total/news")
 @cross_origin()
 @jwt_required()
 def get_admin_total_news_posts():
+    """An endpoint to get the total number of news posts owned by author"""
     user_id = get_jwt_identity()
     news_and_comments = get_posts_and_comments(user_id)
 
     return news_and_comments, 200
 
 
-""" An endpoint to get all the posts written by admin in a specific category """
-
-
 @admin.route("/posts/<string:category>")
 @cross_origin()
 @jwt_required()
 def get_all_user_news__posts(category):
+    """An endpoint to get all the posts written by admin in a specific category"""
     user_id = get_jwt_identity()
     user_posts = (
         Post.query.filter_by(category=category, user_id=user_id)
@@ -137,26 +125,22 @@ def get_all_user_news__posts(category):
     return seliarized_posts, 200
 
 
-""" An endpoint to get the total number of business posts owned by author """
-
-
 @admin.route("/total/business")
 @cross_origin()
 @jwt_required()
 def get_admin_total_business_posts():
+    """An endpoint to get the total number of business posts owned by author"""
     user_id = get_jwt_identity()
     business_and_comments = get_posts_and_comments(user_id)
 
     return business_and_comments, 200
 
 
-""" An endpoint to get the total number of sports posts owned by author """
-
-
 @admin.route("/total/sports")
 @cross_origin()
 @jwt_required()
 def get_admin_total_sports_posts():
+    """An endpoint to get the total number of sports posts owned by author"""
     user_id = get_jwt_identity()
     sports_and_comments = get_posts_and_comments(user_id)
 
@@ -172,34 +156,11 @@ def get_admin_total_entertainment_posts():
 
     return entertainment_and_comments, 200
 
-
-""" An endpoint to create  a post """
-
-
-# @admin.post("/createpost")
-# @cross_origin()
-# @jwt_required()
-# def create_new_post():
-#     try:
-#         user_id = get_jwt_identity()
-#         data = request.form.to_dict(flat=True)
-#         image = request.files.get("image")
-#         status, message = validate_post_data(data)
-#         if status:
-#             response = upload_image(image)
-#             resp = {**data, "image": response, "user_id": user_id}
-#             new_post = Post(**resp)
-#             new_post.__post_init__()
-#             return make_response("success", "post created successfully...", 201)
-#         else:
-#             return make_response("failed", message, 400)
-#     except Exception as e:
-#         return make_response("failed", str(e), 400)
-
 @admin.post("/createpost")
 @cross_origin()
 @jwt_required()
 def create_new_post():
+    """ An endpoint to create  a post """
     try:
         user_id = get_jwt_identity()
         data = request.form.to_dict(flat=True)
@@ -219,9 +180,10 @@ def create_new_post():
         return make_response("failed", str(e), 400)
 
 
+
 @admin.route("/posts/delete/<string:slug>", methods=["DELETE"])
 def delete_post(slug):
-    """ An endpoint to delete a post based on the category """
+    """An endpoint to delete a post based on the category"""
     if delete_post(slug):
         return " ", 204
 
@@ -238,7 +200,6 @@ def check_task_status(task_id):
 
 
 def validate_post_data(post_input) -> bool:
-    print("This is the post input ...")
     required = {"title", "headline", "content", "category"}
     data_fields = set(post_input.keys())
     if required == data_fields:
