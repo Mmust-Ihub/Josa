@@ -1,4 +1,5 @@
-import BlogSkeleton from './BlogSkeleton'
+import React from "react";
+import BlogSkeleton from "./BlogSkeleton";
 
 export default function BlogsSkeleton() {
   return (
