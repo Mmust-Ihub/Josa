@@ -746,7 +746,7 @@ When a user click on a single blog page, the full content of the blog including 
    + where "Kingsly Byrone" is the username displayed with the blog.
 
    + The response body is an array where the a single element of the array looks as follows.
-    
+
   +
     ```python
     Example of request response:

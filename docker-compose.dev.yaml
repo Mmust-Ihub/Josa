@@ -1,53 +1,87 @@
-version: "3.8"
-
 services:
-  web:
-    build: .
-    image: web
-    container_name: web
-    ports:
-      - 5004:5000
-    command: python3 manage.py run -h 0.0.0.0
-    volumes:
-      - .:/usr/src/app
+  backend:
+    build: ./backend
+    expose:
+      - 5000
+    restart: always
+    command: gunicorn --bind 0.0.0.0:5000 --workers 2 --threads 5 manage:app
+    env_file:
+      - ./backend/.env
+    depends_on:
+      - db
     environment:
-      - FLASK_DEBUG=1
-      - APP_SETTINGS=project.server.config.DevelopmentConfig
-      - CELERY_BROKER_URL=redis://redis:6379/0
-      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+      DATABASE: postgres
+      DATABASE_URI: postgresql://admin:admin@db:5432
+    deploy:
+      mode: Replicated
+      replicas: 2
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+    networks:
+      - josa
+    volumes:
+      - ./backend/src/uploads:/app/src/uploads
+    stdin_open: true
+    tty: true
+
+  frontend:
+    build: ./frontend
+    image: frontend
+    container_name: frontend-cont
+    restart: always
+    ports:
+      - "80:80"
+    networks:
+      - josa
+    depends_on:
+      - backend
+    env_file:
+      - ./frontend/.env
+    stdin_open: true
+    tty: true
+
+  db:
+    image: postgres:13
+    ports:
+      - "5432:5432"
+    restart: always
+    networks:
+      - josa
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    environment:
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=admin
 
   worker:
-    build: .
-    command: celery -A project.server.tasks.celery worker --loglevel=info --logfile=project/logs/celery.log
-    volumes:
-      - .:/usr/src/app
+    build: ./backend
+    command: ./celery.sh
+    env_file:
+      - ./backend/.env.prod
+    depends_on:
+      - backend
+      - redis
     environment:
-      - FLASK_DEBUG=1
-      - APP_SETTINGS=project.server.config.DevelopmentConfig
       - CELERY_BROKER_URL=redis://redis:6379/0
       - CELERY_RESULT_BACKEND=redis://redis:6379/0
-
-    depends_on:
-      - web
-      - redis
+    networks:
+      - josa
+    volumes:
+      - ./backend/src/uploads:/app/src/uploads
 
   redis:
     image: redis:6-alpine
-
-  flower:
-    build: .
     ports:
-      - 5555:5555
-      # When running it on a docker container, make sure to replace the host.
-    command: celery -A project.server.tasks.celery flower --port=5555 --broker=redis://localhost:6379
-    volumes:
-      - .:/usr/src/app
-    environment:
-      - FLASK_DEBUG=1
-      - APP_SETTINGS=project.server.config.DevelopmentConfig
-      - CELERY_BROKER_URL=redis://redis:6379/0
-      - CELERY_RESULT_BACKEND=redis://redis:6379/0
-    depends_on:
-      - web 
-      - redis 
-      - worker
+      - "6379:6379"
+    restart: always
+    networks:
+      - josa
+
+volumes:
+  postgres_data: {}
+
+networks:
+  josa:
+    driver: bridge

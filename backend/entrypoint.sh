@@ -11,5 +11,4 @@ if [ "$DATABASE" == "postgres" ]; then
     echo "postgresql started .."
 fi
 
-python manage.py create_db
 exec "$@"

@@ -1,6 +1,7 @@
 from flask import Flask, jsonify
 from flask_jwt_extended import JWTManager
 from flask_cors import CORS
+import socket
 from src.config.config import config_dict
 from src.models.database import Post, db, migrate, User
 from src.auth.auth import auth
@@ -38,7 +39,7 @@ def create_app(config="dev"):
 
     @app.route("/api/healthcheck")
     def healthcheck():
-        return jsonify({"status": "The api is up and running"}), 200
+        return jsonify({"status": "The api is up and running", "hostname": socket.gethostname()}), 200
 
     app.register_blueprint(auth, url_prefix="/api/v1/auth", strict_slashes=False)
     app.register_blueprint(posts, url_prefix="/api/v1/user", strict_slashes=False)

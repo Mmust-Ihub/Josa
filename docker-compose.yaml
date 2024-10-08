@@ -4,21 +4,32 @@ services:
     expose:
       - 5000
     restart: always
-    command: gunicorn --bind 0.0.0.0:5000 --workers 4 --threads 100 manage:app
+    command: gunicorn --bind 0.0.0.0:5000 --workers 2 --threads 5 manage:app
     env_file:
-      - ./backend/.env
+      - ./backend/.env.prod
     depends_on:
       - db
     environment:
       DATABASE: postgres
-      DATABASE_URL: postgresql://admin:admin@db:5432
+      DATABASE_URI: postgresql://admin:admin@db:5432
+    deploy:
+      mode: Replicated
+      replicas: 2
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
     networks:
       - josa
+    volumes:
+      - ./backend/src/uploads:/app/src/uploads
     stdin_open: true
     tty: true
 
   frontend:
-    build: ./frontend
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
     image: frontend
     container_name: frontend-cont
     restart: always
@@ -28,6 +39,8 @@ services:
       - josa
     depends_on:
       - backend
+    env_file:
+      - ./frontend/.env
     stdin_open: true
     tty: true
 
@@ -35,6 +48,9 @@ services:
     image: postgres:13
     ports:
       - "5432:5432"
+    restart: always
+    networks:
+      - josa
     volumes:
       - postgres_data:/var/lib/postgresql/data/
     environment:
@@ -45,13 +61,25 @@ services:
     build: ./backend
     command: ./celery.sh
     env_file:
-      - ./backend/.env
+      - ./backend/.env.prod
     depends_on:
       - backend
       - redis
+    environment:
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+    networks:
+      - josa
+    volumes:
+      - ./backend/src/uploads:/app/src/uploads
 
   redis:
     image: redis:6-alpine
+    ports:
+      - "6379:6379"
+    restart: always
+    networks:
+      - josa
 
 volumes:
   postgres_data: {}

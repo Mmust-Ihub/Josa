@@ -12,3 +12,4 @@ test.py
 *.db
 *.sqlite
 .flaskenv
+.env.*
