@@ -1,14 +1,13 @@
 import os, tinify
 from celery.result import AsyncResult
 from celery import shared_task
-from src.utils.upload import upload_image_to_cloud
+from src.utils.upload import upload_image_to_cloud, compress_image
 from src.models.database import Post
-# , compress_image
 
 @shared_task(name="upload_image", bind=True, ignore_result=False, autoretry_for=(Exception,), retry_kwargs={'max_retries': 3, 'countdown': 5})
 def upload_image(self, data, filepath):
     self.update_state(state="PROGRESS", meta={"remaining": 1, "completed": 0, "message": "task started successfully"})
-    # compress_image(filepath)
+    compress_image(filepath)
     response = upload_image_to_cloud(filepath)
     resp = {**data, "image": response}
     new_post = Post(**resp)

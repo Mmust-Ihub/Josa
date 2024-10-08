@@ -151,7 +151,7 @@ class Post(db.Model, Helper):
         self.save_to_db()
 
     def generate_slug(self, title: str):
-        return title.lower().replace(" ", "-")
+        return title.lower().replace(" ", "-").replace(",", "")
 
     @classmethod
     def paginate(cls, page: Optional[int] = PAGE, per_page: Optional[int] = PER_PAGE):

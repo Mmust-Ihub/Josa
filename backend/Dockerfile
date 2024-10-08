@@ -1,17 +1,24 @@
 FROM python:3.8-slim-buster
 
-RUN mkdir /Josa
+RUN mkdir /app
 
-WORKDIR /Josa
+WORKDIR /app
+
+ENV PYTHONDONTWRITEBYTECODE 1
+
+ENV PYTHONUNBUFFERED 1
+
+RUN apt update && apt install -y netcat
 
 COPY requirements.txt ./
 
-RUN pip install --upgrade pip
+RUN pip install --no-cache --upgrade pip
 
 RUN pip install -r requirements.txt
 
+COPY ./entrypoint.sh /app
 COPY . .
 
-EXPOSE 5000
+RUN chmod +x ./entrypoint.sh
 
-CMD ["python", "main.py", "--host", "0.0.0.0", "--port", "5000"]
+ENTRYPOINT [ "./entrypoint.sh" ]
