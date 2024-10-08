@@ -1,8 +1,8 @@
-import React from 'react'
+/* eslint-disable react/prop-types */
 import { Link } from 'react-router-dom';
 
 function NewsCard (props){
-  const { title, image, slug, published_on, author, id ,category} = props; // Destructure id from props
+  const { title, image, slug, published_on, id ,category} = props; // Destructure id from props
 
   const url = `/${category}/${id}`; // Use id in the URL
   localStorage.setItem('id', props.key);
