@@ -1,8 +1,6 @@
 import  { useEffect, useState, Suspense } from "react";
 import MainNews from "../Component/homePage/MainNews";
 import NewsCard from "../Component/homePage/NewsCard";
-import Navbar from "../Component/Navbar";
-import Footer from "../Component/Footer";
 import LoadingSpinner from "../Component/LoadingSpinner";
 import Heading from "../Component/homePage/Heading";
 import { motion } from "framer-motion";
@@ -102,9 +100,7 @@ function Homepage() {
           ></script>
           <link rel="stylesheet" href="/assets/index-8819064a.css" />
         </Helmet>
-        <div className="relative mb-24">
-          <Navbar />
-        </div>
+       
 
         <motion.div
           initial={{ x: -100, opacity: 0 }}
@@ -274,7 +270,6 @@ function Homepage() {
          
 
       </div>
-      <Footer />
     </div>
   ) 
 :(

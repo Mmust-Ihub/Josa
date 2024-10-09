@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import  { useState } from 'react';
 import { TiThMenu } from 'react-icons/ti';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';

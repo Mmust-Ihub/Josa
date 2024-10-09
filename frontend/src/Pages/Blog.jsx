@@ -1,10 +1,8 @@
 // Blog.js
 import { useEffect, useState } from 'react';
-import Navbar from '../Component/Navbar';
 import SidePanel from '../Component/SidePanel';
 import Content from '../Component/BlogChat';
 import { useParams } from 'react-router-dom';
-import Footer from '../Component/Footer';
 import Comments from '../Component/Comments';
 import ViewComment from '../Component/ViewComment';
 import SingleBlogSkeleton from '../Skeleton/SingleBlogSkeleton';
@@ -46,7 +44,6 @@ function Blog() {
 
   return (
     <div>
-      <Navbar />
       <div className=" py-24 flex flex-col md:flex-row   ">
         {Object.keys(postData).length  == 0  ? (
           <SingleBlogSkeleton/>
@@ -92,7 +89,6 @@ function Blog() {
         <ViewComment comments={postData.comments} />
       )}
 
-      <Footer />
     </div>
   );
 }

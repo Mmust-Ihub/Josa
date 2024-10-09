@@ -1,6 +1,4 @@
-import React, { useEffect, useState } from 'react';
-import Navbar from '../Component/Navbar'
-import Footer from '../Component/Footer'
+import  { useEffect, useState } from 'react';
 import MainCatNews from '../Component/Category/MainCatNews.jsx'
 import OtherCatNews from '../Component/Category/OtherCatNews.jsx';
 import NewsCard from '../Component/homePage/NewsCard.jsx';
@@ -29,7 +27,7 @@ function News  () {
      .catch((error) => {
        console.error("Error fetching news data:", error);
      });
- }, []);
+ }, [apiBaseUrl]);
 
  console.log(newsOther)
 
@@ -40,7 +38,6 @@ function News  () {
 
   return (
     <div className='flex flex-col'>
-      <Navbar />
       <h1 className='my-12 py-12 text-[24px] font-bold text-center tracking-wider'>Main News</h1>
       <div className='flex '>
       <div>
@@ -58,7 +55,7 @@ function News  () {
           />
             
             <div className='p-4 justify-center  rounded-lg border-gray-300 bg-slate-100 hidden md:block'>
-              {sideNews.map((item, key) =>  (
+              {sideNews.map((item) =>  (
                 <OtherCatNews
                 key={item.id}
                 title={item.title}
@@ -75,7 +72,7 @@ function News  () {
       </div>
       <h1 className='my-12 py-12 text-[24px] font-bold text-center tracking-wider'>Other News</h1>
      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 justify-center items-top md:gap-5 lg:gap-6">
-        {newsOther.map((item, key) => (
+        {newsOther.map((item) => (
           <NewsCard
             key={item.id}
             id={item.id}
@@ -90,7 +87,6 @@ function News  () {
         ))}
       </div>
 
-      <Footer/>
       </div>   
 
     

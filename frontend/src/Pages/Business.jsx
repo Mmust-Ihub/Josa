@@ -1,6 +1,4 @@
-import React, { useEffect, useState } from 'react';
-import Navbar from '../Component/Navbar'
-import Footer from '../Component/Footer'
+import { useEffect, useState } from 'react';
 import MainCatNews from '../Component/Category/MainCatNews.jsx'
 import OtherCatNews from '../Component/Category/OtherCatNews.jsx';
 import NewsCard from '../Component/homePage/NewsCard.jsx';
@@ -28,7 +26,7 @@ fetch(`${apiBaseUrl}/api/v1/user/business`)
     .catch((error) => {
         console.error('Error fetching news data:', error);
     });
-}, []);
+}, [apiBaseUrl]);
 
  
 
@@ -39,7 +37,6 @@ fetch(`${apiBaseUrl}/api/v1/user/business`)
 
   return (
     <div className="flex flex-col">
-      <Navbar />
       <h1 className="my-12 py-12 text-[24px] font-bold text-center tracking-wider">
         Main Business News
       </h1>
@@ -58,7 +55,7 @@ fetch(`${apiBaseUrl}/api/v1/user/business`)
             />
 
             <div className="px-4 mx-auto sm:max-w-xl md:max-w-full lg:max-w-screen-xl md:px-20 lg:px-40 lg:py-12">
-              {sideBusiness.map((item, key) => (
+              {sideBusiness.map((item) => (
                 <OtherCatNews
                 key={item.id}
                 title={item.title}
@@ -89,7 +86,6 @@ fetch(`${apiBaseUrl}/api/v1/user/business`)
         ))}
       </div>
 
-      <Footer />
     </div>
   );
 }

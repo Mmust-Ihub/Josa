@@ -4,6 +4,7 @@ import "./App.css";
 
 // Import your components as needed
 import Homepage from "./Pages/Homepage";
+import Layout from "./Layout";
 import LoginForm from "./Pages/Login";
 import Admin from "./Pages/Admin";
 import Blog from "./Pages/Blog";
@@ -20,7 +21,8 @@ class App extends React.Component {
     return (
       <Router>
         <Routes>
-          <Route path="/" element={<Homepage />} />
+        <Route path="/" element={<Layout />}>
+          <Route index element={<Homepage />} /> 
           <Route path="/admin" element={<Admin />} />
           <Route path="/news" element={<News />} />
           <Route path="/business" element={<Business />} />
@@ -33,6 +35,8 @@ class App extends React.Component {
           <Route path="/:category/:slug" element={<Blog />} />
           <Route path="/CB" element={<CB />} />
           <Route path="/EditBlog" element={<EditBlog />} />
+        </Route>
+       
         </Routes>
       </Router>
     );

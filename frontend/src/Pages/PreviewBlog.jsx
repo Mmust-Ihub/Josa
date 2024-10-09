@@ -1,6 +1,4 @@
-import React from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import Footer from "../Component/Footer";
 
 function PreviewBlog() {
     const gradientColors = ["#5000ca", "#8b5cf6", "#f472b6"];
