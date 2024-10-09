@@ -1,9 +1,9 @@
 #! /bin/bash
 
 : '---- CONSTANTS ----'
-COMPOSE_FILE="docker-compose.dev.yaml"
+COMPOSE_FILE="docker-compose.yaml"
 BRANCH="main"
-IHUB_PATH=~/Josa/
+IHUB_PATH=~/Josa/Josa
 
 set -e
 
@@ -32,10 +32,6 @@ function check_docker_is_running(){
 # stop the existing containers
 function stop_running_containers() {
     echo "Stopping the running containers ..."
-
-    # docker ps -a --format '{{.Names}}' | grep "^${CONTAINER_PREFIX}" | xargs -r docker stop
-    # # remove all the stopped containers
-    # docker ps -a --format '{{.Names}}' | grep "^${CONTAINER_PREFIX}" | xargs -r docker rm
     docker compose -f $COMPOSE_FILE down
     docker image prune -f
     echo "removed the old containers and daggling images ...."
