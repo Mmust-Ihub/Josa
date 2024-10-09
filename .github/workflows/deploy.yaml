@@ -1,0 +1,41 @@
+name: Ihub
+run-name: Deploy
+
+on:
+  push:
+    branches:
+      - main
+    tags:
+      - "v1.*"
+  pull_request:
+    branches: ["main"]
+    types:
+      - closed
+
+  workflow_dispatch:
+    inputs:
+      reason:
+        description: "Reason for re-run"
+        type: string
+        required: false
+        default: "testing"
+
+jobs:
+  Deploy:
+    runs-on:
+      - self-hosted
+      - Josa
+
+    steps:
+      - name: checkout the repo
+        uses: actions/checkout@v4
+
+      - name: change file permissions
+        shell: bash
+        run: |
+          chmod +x ./deploy.sh
+
+      - name: deploy latest updates
+        shell: bash
+        run: |
+          ./deploy.sh
