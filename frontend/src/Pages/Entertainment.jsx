@@ -2,6 +2,7 @@ import  { useEffect, useState } from 'react';
 import MainCatNews from '../Component/Category/MainCatNews.jsx'
 import OtherCatNews from '../Component/Category/OtherCatNews.jsx';
 import NewsCard from '../Component/homePage/NewsCard.jsx';
+import SingleBlogSkeleton from '../Skeleton/SingleBlogSkeleton';
 
 
 function Entertainment  () {
@@ -9,6 +10,8 @@ function Entertainment  () {
   const [entertainmentData, setEntertainmentData] = useState([]);
   const [sideEntertainment, setSideEntertainment] = useState([]);
   const [otherEntertainment, setOtherEntertainment] = useState([]);
+  const [loading, setLoading] = useState(true);
+
   const apiBaseUrl = import.meta.env.VITE_API_BASE_URL
 
  useEffect(() => {
@@ -18,14 +21,20 @@ fetch(`${apiBaseUrl}/api/v1/user/entertainment`)
     .then((data) => {
         const valuesArray = Object.values(data);
 
-        setOtherEntertainment(valuesArray.slice(4));
-        setSideEntertainment(valuesArray.slice(1, 3));
         if (valuesArray && valuesArray.length > 0) {
-            setEntertainmentData(valuesArray[0]);
+          setEntertainmentData(valuesArray[0]);
+          setLoading((prevState) => {
+            !prevState;
+          });
+          setSideEntertainment(valuesArray.slice(1, 3));
+          setOtherEntertainment(valuesArray.slice(4));
         }
     })
     .catch((error) => {
         console.error('Error fetching news data:', error);
+        setLoading((prevState) => {
+          !prevState;
+        });
     });
 }, [apiBaseUrl]);
 
@@ -36,7 +45,7 @@ fetch(`${apiBaseUrl}/api/v1/user/entertainment`)
     return new Date(dateString).toLocaleString(undefined, options);
   };
 
-  return (
+  return !loading? (
     <div className='flex flex-col'>
       <h1 className='my-12 py-12 text-[24px] font-bold text-center tracking-wider'>Main Entertainment News</h1>
       <div className='flex '>
@@ -89,6 +98,13 @@ fetch(`${apiBaseUrl}/api/v1/user/entertainment`)
     
     
   
+  ):(
+    <>
+      <div className='h-[100vh] mt-24'>
+
+    <SingleBlogSkeleton/>
+      </div>
+    </>
   )
 }
 

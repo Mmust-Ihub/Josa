@@ -2,6 +2,7 @@ import  { useEffect, useState } from 'react';
 import MainCatNews from '../Component/Category/MainCatNews.jsx'
 import OtherCatNews from '../Component/Category/OtherCatNews.jsx';
 import NewsCard from '../Component/homePage/NewsCard.jsx';
+import SingleBlogSkeleton from '../Skeleton/SingleBlogSkeleton';
 
 
 function News  () {
@@ -9,6 +10,8 @@ function News  () {
   const [newsData, setNewsData] = useState([]);
   const [sideNews, setSideNews] = useState([]);
   const [newsOther, setNewsOther] = useState([]);
+  const [loading, setLoading] = useState(true);
+
 
   const apiBaseUrl = import.meta.env.VITE_API_BASE_URL
  useEffect(() => {
@@ -19,13 +22,19 @@ function News  () {
        const valuesArray = Object.values(data);
 
        if (valuesArray && valuesArray.length >= 4) {
+         setNewsData(valuesArray[0]);
+         setLoading((prevState) => {
+          !prevState;
+        });
          setNewsOther(valuesArray.slice(3)); // Adjust the slice to start from the fourth element
          setSideNews(valuesArray.slice(1, 3));
-         setNewsData(valuesArray[0]);
        }
      })
      .catch((error) => {
        console.error("Error fetching news data:", error);
+       setLoading((prevState) => {
+        !prevState;
+      });
      });
  }, [apiBaseUrl]);
 
@@ -36,8 +45,8 @@ function News  () {
     return new Date(dateString).toLocaleString(undefined, options);
   };
 
-  return (
-    <div className='flex flex-col'>
+  return !loading? (
+    <div className='flex flex-col'>     
       <h1 className='my-12 py-12 text-[24px] font-bold text-center tracking-wider'>Main News</h1>
       <div className='flex '>
       <div>
@@ -92,6 +101,13 @@ function News  () {
     
     
   
+  ):(
+    <>
+      <div className='h-[100vh] mt-24'>
+
+    <SingleBlogSkeleton/>
+      </div>
+    </>
   )
 }
 
