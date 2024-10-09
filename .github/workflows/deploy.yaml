@@ -1,5 +1,5 @@
-name: Ihub
-run-name: Deploy
+name: Josa
+run-name: Deploy-Josa
 
 on:
   push:
