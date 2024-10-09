@@ -3,6 +3,8 @@ import MainCatNews from '../Component/Category/MainCatNews.jsx'
 import OtherCatNews from '../Component/Category/OtherCatNews.jsx';
 import NewsCard from '../Component/homePage/NewsCard.jsx';
 import SingleBlogSkeleton from '../Skeleton/SingleBlogSkeleton';
+import EmptyContainer from '../Component/EmptyContainer.jsx';
+
 
 
 function Entertainment  () {
@@ -20,12 +22,13 @@ fetch(`${apiBaseUrl}/api/v1/user/entertainment`)
     .then((response) => response.json())
     .then((data) => {
         const valuesArray = Object.values(data);
+        setLoading((prevState) => {
+          !prevState;
+        });
 
         if (valuesArray && valuesArray.length > 0) {
           setEntertainmentData(valuesArray[0]);
-          setLoading((prevState) => {
-            !prevState;
-          });
+        
           setSideEntertainment(valuesArray.slice(1, 3));
           setOtherEntertainment(valuesArray.slice(4));
         }
@@ -46,6 +49,12 @@ fetch(`${apiBaseUrl}/api/v1/user/entertainment`)
   };
 
   return !loading? (
+
+    <>
+    {entertainmentData.length == 0?(
+      <EmptyContainer/>
+    ):(
+
     <div className='flex flex-col'>
       <h1 className='my-12 py-12 text-[24px] font-bold text-center tracking-wider'>Main Entertainment News</h1>
       <div className='flex '>
@@ -94,6 +103,8 @@ fetch(`${apiBaseUrl}/api/v1/user/entertainment`)
       </div>
 
       </div>   
+    )}
+    </>
 
     
     

@@ -3,6 +3,7 @@ import MainCatNews from '../Component/Category/MainCatNews.jsx'
 import OtherCatNews from '../Component/Category/OtherCatNews.jsx';
 import NewsCard from '../Component/homePage/NewsCard.jsx';
 import SingleBlogSkeleton from '../Skeleton/SingleBlogSkeleton';
+import EmptyContainer from '../Component/EmptyContainer.jsx';
 
 
 function Business  () {
@@ -19,12 +20,13 @@ fetch(`${apiBaseUrl}/api/v1/user/business`)
     .then((response) => response.json())
     .then((data) => {
         const valuesArray = Object.values(data);
+        setLoading((prevState) => {
+          !prevState;
+        });
 
         if (valuesArray && valuesArray.length > 0) {
           setBusinessData(valuesArray[0]);
-          setLoading((prevState) => {
-            !prevState;
-          });
+          
           setSideBusiness(valuesArray.slice(1, 3));
           setOtherBusiness(valuesArray.slice(3,));
         }
@@ -45,6 +47,11 @@ fetch(`${apiBaseUrl}/api/v1/user/business`)
   };
 
   return !loading? (
+    <>
+    {businessData.length == 0?(
+      <EmptyContainer/>
+    ):(
+
     <div className="flex flex-col">
       <h1 className="my-12 py-12 text-[24px] font-bold text-center tracking-wider">
         Main Business News
@@ -96,6 +103,10 @@ fetch(`${apiBaseUrl}/api/v1/user/business`)
       </div>
 
     </div>
+    )}
+    
+    </>
+
   ):(
     <>
       <div className='h-[100vh] mt-24'>

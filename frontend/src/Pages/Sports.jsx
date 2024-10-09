@@ -3,6 +3,8 @@ import MainCatNews from '../Component/Category/MainCatNews.jsx'
 import OtherCatNews from '../Component/Category/OtherCatNews.jsx';
 import NewsCard from '../Component/homePage/NewsCard.jsx';
 import SingleBlogSkeleton from '../Skeleton/SingleBlogSkeleton';
+import EmptyContainer from '../Component/EmptyContainer.jsx';
+
 
 
 function Sports  () {
@@ -19,12 +21,12 @@ fetch(`${apiBaseUrl}/api/v1/user/sports`)
     .then((response) => response.json())
     .then((data) => {
         const valuesArray = Object.values(data);
-
+        setLoading((prevState) => {
+          !prevState;
+        });
         if (valuesArray && valuesArray.length > 0) {
           setSportsData(valuesArray[0]);
-          setLoading((prevState) => {
-            !prevState;
-          });
+         
           setSideSports(valuesArray.slice(1, 3));
           setOtherSports(valuesArray.slice(3));
         }
@@ -45,6 +47,12 @@ fetch(`${apiBaseUrl}/api/v1/user/sports`)
   };
 
   return !loading? (
+
+    <>
+    {sportsData.length == 0?(
+      <EmptyContainer/>
+    ):(
+
     <div className='flex flex-col'>
       <h1 className='my-12 py-12 text-[24px] font-bold text-center tracking-wider'>Main Sports  News</h1>
       <div className='flex '>
@@ -95,6 +103,8 @@ fetch(`${apiBaseUrl}/api/v1/user/sports`)
       </div>
 
       </div>   
+    )}
+    </>
 
     
     

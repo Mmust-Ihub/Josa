@@ -3,6 +3,8 @@ import MainCatNews from '../Component/Category/MainCatNews.jsx'
 import OtherCatNews from '../Component/Category/OtherCatNews.jsx';
 import NewsCard from '../Component/homePage/NewsCard.jsx';
 import SingleBlogSkeleton from '../Skeleton/SingleBlogSkeleton';
+import EmptyContainer from '../Component/EmptyContainer.jsx';
+
 
 
 function News  () {
@@ -20,12 +22,13 @@ function News  () {
      .then((response) => response.json())
      .then((data) => {
        const valuesArray = Object.values(data);
+       setLoading((prevState) => {
+        !prevState;
+      });
 
        if (valuesArray && valuesArray.length >= 4) {
          setNewsData(valuesArray[0]);
-         setLoading((prevState) => {
-          !prevState;
-        });
+        
          setNewsOther(valuesArray.slice(3)); // Adjust the slice to start from the fourth element
          setSideNews(valuesArray.slice(1, 3));
        }
@@ -46,7 +49,12 @@ function News  () {
   };
 
   return !loading? (
-    <div className='flex flex-col'>     
+
+    <>
+    {newsData.length == 0?(
+      <EmptyContainer/>
+    ):(
+      <div className='flex flex-col'>     
       <h1 className='my-12 py-12 text-[24px] font-bold text-center tracking-wider'>Main News</h1>
       <div className='flex '>
       <div>
@@ -97,6 +105,10 @@ function News  () {
       </div>
 
       </div>   
+    )}
+    </>
+
+ 
 
     
     
