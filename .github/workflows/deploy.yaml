@@ -24,7 +24,7 @@ jobs:
   Deploy:
     runs-on:
       - self-hosted
-      - Josa
+      - josa
 
     steps:
       - name: checkout the repo
