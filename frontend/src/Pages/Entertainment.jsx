@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from 'react';
-import Navbar from '../Component/Navbar'
-import Footer from '../Component/Footer'
+import  { useEffect, useState } from 'react';
 import MainCatNews from '../Component/Category/MainCatNews.jsx'
 import OtherCatNews from '../Component/Category/OtherCatNews.jsx';
 import NewsCard from '../Component/homePage/NewsCard.jsx';
+import SingleBlogSkeleton from '../Skeleton/SingleBlogSkeleton';
+import EmptyContainer from '../Component/EmptyContainer.jsx';
+
 
 
 function Entertainment  () {
@@ -11,6 +12,8 @@ function Entertainment  () {
   const [entertainmentData, setEntertainmentData] = useState([]);
   const [sideEntertainment, setSideEntertainment] = useState([]);
   const [otherEntertainment, setOtherEntertainment] = useState([]);
+  const [loading, setLoading] = useState(true);
+
   const apiBaseUrl = import.meta.env.VITE_API_BASE_URL
 
  useEffect(() => {
@@ -19,17 +22,24 @@ fetch(`${apiBaseUrl}/api/v1/user/entertainment`)
     .then((response) => response.json())
     .then((data) => {
         const valuesArray = Object.values(data);
+        setLoading((prevState) => {
+          !prevState;
+        });
 
-        setOtherEntertainment(valuesArray.slice(4));
-        setSideEntertainment(valuesArray.slice(1, 3));
         if (valuesArray && valuesArray.length > 0) {
-            setEntertainmentData(valuesArray[0]);
+          setEntertainmentData(valuesArray[0]);
+        
+          setSideEntertainment(valuesArray.slice(1, 3));
+          setOtherEntertainment(valuesArray.slice(4));
         }
     })
     .catch((error) => {
         console.error('Error fetching news data:', error);
+        setLoading((prevState) => {
+          !prevState;
+        });
     });
-}, []);
+}, [apiBaseUrl]);
 
  
 
@@ -38,9 +48,14 @@ fetch(`${apiBaseUrl}/api/v1/user/entertainment`)
     return new Date(dateString).toLocaleString(undefined, options);
   };
 
-  return (
+  return !loading? (
+
+    <>
+    {entertainmentData.length == 0?(
+      <EmptyContainer/>
+    ):(
+
     <div className='flex flex-col'>
-      <Navbar />
       <h1 className='my-12 py-12 text-[24px] font-bold text-center tracking-wider'>Main Entertainment News</h1>
       <div className='flex '>
       <div>
@@ -57,7 +72,7 @@ fetch(`${apiBaseUrl}/api/v1/user/entertainment`)
           />
             
             <div className='p-4 justify-center  rounded-lg border-gray-300 bg-slate-100 hidden md:block'>
-              {sideEntertainment.map((item, key) => (
+              {sideEntertainment.map((item) => (
                 <OtherCatNews
                 key={item.key}
                 title={item.title}
@@ -87,12 +102,20 @@ fetch(`${apiBaseUrl}/api/v1/user/entertainment`)
         ))}
       </div>
 
-      <Footer/>
       </div>   
+    )}
+    </>
 
     
     
   
+  ):(
+    <>
+      <div className='h-[100vh] mt-24'>
+
+    <SingleBlogSkeleton/>
+      </div>
+    </>
   )
 }
 

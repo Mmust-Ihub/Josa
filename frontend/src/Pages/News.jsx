@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from 'react';
-import Navbar from '../Component/Navbar'
-import Footer from '../Component/Footer'
+import  { useEffect, useState } from 'react';
 import MainCatNews from '../Component/Category/MainCatNews.jsx'
 import OtherCatNews from '../Component/Category/OtherCatNews.jsx';
 import NewsCard from '../Component/homePage/NewsCard.jsx';
+import SingleBlogSkeleton from '../Skeleton/SingleBlogSkeleton';
+import EmptyContainer from '../Component/EmptyContainer.jsx';
+
 
 
 function News  () {
@@ -11,6 +12,8 @@ function News  () {
   const [newsData, setNewsData] = useState([]);
   const [sideNews, setSideNews] = useState([]);
   const [newsOther, setNewsOther] = useState([]);
+  const [loading, setLoading] = useState(true);
+
 
   const apiBaseUrl = import.meta.env.VITE_API_BASE_URL
  useEffect(() => {
@@ -19,17 +22,24 @@ function News  () {
      .then((response) => response.json())
      .then((data) => {
        const valuesArray = Object.values(data);
+       setLoading((prevState) => {
+        !prevState;
+      });
 
        if (valuesArray && valuesArray.length >= 4) {
+         setNewsData(valuesArray[0]);
+        
          setNewsOther(valuesArray.slice(3)); // Adjust the slice to start from the fourth element
          setSideNews(valuesArray.slice(1, 3));
-         setNewsData(valuesArray[0]);
        }
      })
      .catch((error) => {
        console.error("Error fetching news data:", error);
+       setLoading((prevState) => {
+        !prevState;
+      });
      });
- }, []);
+ }, [apiBaseUrl]);
 
  console.log(newsOther)
 
@@ -38,9 +48,13 @@ function News  () {
     return new Date(dateString).toLocaleString(undefined, options);
   };
 
-  return (
-    <div className='flex flex-col'>
-      <Navbar />
+  return !loading? (
+
+    <>
+    {newsData.length == 0?(
+      <EmptyContainer/>
+    ):(
+      <div className='flex flex-col'>     
       <h1 className='my-12 py-12 text-[24px] font-bold text-center tracking-wider'>Main News</h1>
       <div className='flex '>
       <div>
@@ -58,7 +72,7 @@ function News  () {
           />
             
             <div className='p-4 justify-center  rounded-lg border-gray-300 bg-slate-100 hidden md:block'>
-              {sideNews.map((item, key) =>  (
+              {sideNews.map((item) =>  (
                 <OtherCatNews
                 key={item.id}
                 title={item.title}
@@ -75,7 +89,7 @@ function News  () {
       </div>
       <h1 className='my-12 py-12 text-[24px] font-bold text-center tracking-wider'>Other News</h1>
      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 justify-center items-top md:gap-5 lg:gap-6">
-        {newsOther.map((item, key) => (
+        {newsOther.map((item) => (
           <NewsCard
             key={item.id}
             id={item.id}
@@ -90,12 +104,22 @@ function News  () {
         ))}
       </div>
 
-      <Footer/>
       </div>   
+    )}
+    </>
+
+ 
 
     
     
   
+  ):(
+    <>
+      <div className='h-[100vh] mt-24'>
+
+    <SingleBlogSkeleton/>
+      </div>
+    </>
   )
 }
 

@@ -1,19 +1,16 @@
-import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import  { useEffect, useState, Suspense } from "react";
 import MainNews from "../Component/homePage/MainNews";
 import NewsCard from "../Component/homePage/NewsCard";
-import Navbar from "../Component/Navbar";
-import Footer from "../Component/Footer";
 import LoadingSpinner from "../Component/LoadingSpinner";
 import Heading from "../Component/homePage/Heading";
 import { motion } from "framer-motion";
 import { Helmet } from "react-helmet";
 import toast, { Toaster } from "react-hot-toast";
+import BlogsSkeleton from "../Skeleton/BlogsSkeleton";
 function Homepage() {
   const [latestData, setLatestData] = useState([]);
   const [newsData, setNewsData] = useState([]);
   const [businessData, setBusinessData] = useState([]);
-  const [moreBusinessData, setMoreBusinessData] = useState([]);
   const [sportsData, setSportsData] = useState([]);
   const [entertainmentData, setEntertainmentData] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -34,16 +31,16 @@ function Homepage() {
         const latestNews = await latestData.News
         setLatestData(latestNews.slice(0, 1));
 
-         // Fetch business data
-         const businessRequest = await fetch(
+        // Fetch business data
+        const businessRequest = await fetch(
           `${apiBaseUrl}/api/v1/user`
         );
         const businessData = await businessRequest.json();
         const latestBusiness = await businessData.Business
         setBusinessData(latestBusiness.slice(0, 3));
 
-         // Fetch entertainment data
-         const entertainmentRequest = await fetch(
+        // Fetch entertainment data
+        const entertainmentRequest = await fetch(
           `${apiBaseUrl}/api/v1/user`
         );
         const response = await entertainmentRequest.json();
@@ -65,12 +62,8 @@ function Homepage() {
         const newsData = await newsResponse.json();
         setNewsData(newsData.slice(1, 4));
 
-        // Fetch more business data
-        const moreBusinessResponse = await fetch(
-          "https://mmust-jowa.onrender.com/api/v1/user/business"
-        );
-        const moreBusinessData = await moreBusinessResponse.json();
-        setMoreBusinessData(moreBusinessData.slice(0, 3));
+
+       
 
         // Set loading to false when data is fetched
       } catch (error) {
@@ -83,20 +76,10 @@ function Homepage() {
     };
 
     fetchData();
-  }, []);
+  }, [apiBaseUrl]);
 
-  const formatToLocalTime = (dateString) => {
-    const options = {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-      hour: "numeric",
-      minute: "numeric",
-      hour12: false,
-    };
-    return new Date(dateString).toLocaleString(undefined, options);
-  };
-  return !loading ? (
+
+  return !loading?  (
     <div className=" overflow-x-hidden">
       <div className="px-4 mx-auto sm:max-w-xl md:max-w-full lg:max-w-screen-xl md:px-20 lg:px-40 lg:py-12">
         <Toaster />
@@ -112,14 +95,12 @@ function Homepage() {
           <title>MMUST JOSA DIGITAL</title>
           <script
             type="module"
-            crossorigin
+            crossOrigin
             src="/assets/index-e6276024.js"
           ></script>
           <link rel="stylesheet" href="/assets/index-8819064a.css" />
         </Helmet>
-        <div className="relative mb-24">
-          <Navbar />
-        </div>
+       
 
         <motion.div
           initial={{ x: -100, opacity: 0 }}
@@ -134,88 +115,164 @@ function Homepage() {
           </h1>
         </motion.div>
 
-        {latestData.map((item, key) => (
-          <MainNews
-            key={item.id}
-            id={item.id}
-            title={item.title}
-            slug={item.slug}
-            headline={item.headline}
-            category={"news"}
-            published_on={formatToLocalTime(item.published_on)}
-            image={item.image}
-          />
-        ))}
-        <Heading title={"Business News"} category="business" />
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {/* <Businesss News /> */}
-          {businessData.map((item, key) => (
-            <NewsCard
+        <Suspense fallback={<BlogsSkeleton />}>
+
+
+
+          {latestData.map((item) => (
+            <MainNews
               key={item.id}
-              category={"business"}
               id={item.id}
               title={item.title}
               slug={item.slug}
               headline={item.headline}
+              category={"news"}
+              published_on={new Date(item.published_on).toLocaleDateString()}
               image={item.image}
-              published_on={formatToLocalTime(item.published_on)}
-            />
-          ))}{" "}
-        </div>
-        {/* Entertainment News */}
-        <Heading title={"Entertainment News"} category="entertainment" />
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {entertainmentData.map((item, key) => (
-            <NewsCard
-            key={item.id}
-            category={"entertainment"}
-            id={item.id}
-            title={item.title}
-            slug={item.slug}
-            headline={item.headline}
-            image={item.image}
-            published_on={formatToLocalTime(item.published_on)}
-            />
-          ))}{" "}
-        </div>
-        {/* SportsNews */}
-        <Heading title={"Sport News"} category="sports" />
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {sportsData.map((item, key) => (
-            <NewsCard
-            key={item.id}
-            category={"sports"}
-            id={item.id}
-            title={item.title}
-            slug={item.slug}
-            headline={item.headline}
-            image={item.image}
-            published_on={formatToLocalTime(item.published_on)}
             />
           ))}
-        </div>
-        {/* News */}
+        </Suspense>
 
-        <Heading title={"Other News"} category="news" />
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {newsData.map((item, key) => (
+     {businessData.length == 0 && sportsData.length == 0 && newsData.length == 0 && entertainmentData.length == 0 ?(
+      <>
+          <div className='mt-12 gap-4 flex flex-col'>
+          <BlogsSkeleton/>
+          <BlogsSkeleton/>
+          <BlogsSkeleton/>
+
+          </div>
+          </>     ):(
+      <>
+         {businessData.length > 0 ? (
+          <>
+            <Heading title={"Business News"} category="business"  />
+            {loading ? (
+              <BlogsSkeleton />
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                {businessData.map((item) => (
+                  <NewsCard
+                    key={item.id}
+                    category={"business"}
+                    id={item.id}
+                    title={item.title}
+                    slug={item.slug}
+                    headline={item.headline}
+                    image={item.image}
+                    published_on={new Date(item.published_on).toLocaleDateString()}
+                  />
+                ))}
+              </div>
+            )}
+          </>
+        ) : null}
+        
+              
+        
+        
+                
+                {/* Entertainment News */}
+                {entertainmentData.length > 0 ? (
+          <>
+              <Heading title={"Entertainment News"} category="entertainment"  />
+               
+        
+               {loading?(
+                     <BlogsSkeleton/>
+                   ):
+                   (
+        
+                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                   {entertainmentData.map((item) => (
+                     <NewsCard
+                       key={item.id}
+                       category={"entertainment"}
+                       id={item.id}
+                       title={item.title}
+                       slug={item.slug}
+                       headline={item.headline}
+                       image={item.image}
+                       published_on={new Date(item.published_on).toLocaleDateString()}
+                     />
+                   ))}{" "}
+                 </div>
+                   )}
+          </>
+        ) : null}
+              
+        
+                {/* SportsNews */}
+          {sportsData.length > 0 ? (
+          <>
+               <Heading title={"Sport News"} category="sports"  />
+        
+        {loading ?(
+              <BlogsSkeleton/>
+            ):
+            (
+        
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {sportsData.map((item) => (
+              <NewsCard
+                key={item.id}
+                category={"sports"}
+                id={item.id}
+                title={item.title}
+                slug={item.slug}
+                headline={item.headline}
+                image={item.image}
+                published_on={new Date(item.published_on).toLocaleDateString()}
+              />
+            ))}
+          </div>
+            )}
+          </>
+        ) : null}
+              
+        
+        
+        
+               
+                {/* News */}
+        
+                {newsData.length > 0 ? (
+          <>
+                 <Heading title={"Other News"} category="news"  />
+        
+                
+        
+        {loading ?(
+          
+          <BlogsSkeleton/>
+        ):
+        (
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {newsData.map((item) => (
             <NewsCard
-            key={item.id}
-            category={"news"}
-            id={item.id}
-            title={item.title}
-            slug={item.slug}
-            headline={item.headline}
-            image={item.image}
-            published_on={formatToLocalTime(item.published_on)}
+              key={item.id}
+              category={"news"}
+              id={item.id}
+              title={item.title}
+              slug={item.slug}
+              headline={item.headline}
+              image={item.image_id}
+              published_on={new Date(item.published_on).toLocaleDateString()}
             />
           ))}
         </div>
+        )}
+          </>
+        ) : null}
+        
+         </>    
+        
+     )}
+         
+
       </div>
-      <Footer />
     </div>
-  ) : (
-    <LoadingSpinner />
-  );
-}
+  ) 
+:(
+  <LoadingSpinner/>
+)}
 export default Homepage;

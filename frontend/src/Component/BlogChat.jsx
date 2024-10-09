@@ -1,18 +1,19 @@
-import React from "react";
+/* eslint-disable react/prop-types */
 import { motion } from "framer-motion";
 import { IoMdTime } from "react-icons/io";
 import { Typewriter } from "react-simple-typewriter";
-import ViewComment from "./ViewComment";
+import pic from '/images/profile.png'
 
 function Content(props) {
-  const id = 1;
+  const id = props.id;
   const title = props.title;
-  const slug = props.slug;
   const content = props.content;
   const published_on = props.published_on;
   const author = props.author;
   const image = props.image;
   const author_image = props.author_image;
+
+  console.log("Image :",author_image)
   return (
     <div className="flex flex-col   px-5 ">
       <div className=" md:flex-3" key={id}>
@@ -33,7 +34,7 @@ function Content(props) {
                         duration: 1.5,
                       }}
                       alt="avatar"
-                      src={author_image}
+                      src={author_image || pic}
                       className="object-cover w-10 h-10 rounded-full shadow-sm"
                     />
                   </a>

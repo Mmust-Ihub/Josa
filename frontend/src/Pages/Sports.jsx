@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from 'react';
-import Navbar from '../Component/Navbar'
-import Footer from '../Component/Footer'
+import  { useEffect, useState } from 'react';
 import MainCatNews from '../Component/Category/MainCatNews.jsx'
 import OtherCatNews from '../Component/Category/OtherCatNews.jsx';
 import NewsCard from '../Component/homePage/NewsCard.jsx';
+import SingleBlogSkeleton from '../Skeleton/SingleBlogSkeleton';
+import EmptyContainer from '../Component/EmptyContainer.jsx';
+
 
 
 function Sports  () {
@@ -11,6 +12,8 @@ function Sports  () {
   const [sportsData, setSportsData] = useState([]);
   const [sideSports, setSideSports] = useState([]);
   const [otherSports, setOtherSports] = useState([]);
+  const [loading, setLoading] = useState(true);
+
   const apiBaseUrl = import.meta.env.VITE_API_BASE_URL
  useEffect(() => {
   // Fetch news data from the API
@@ -18,17 +21,23 @@ fetch(`${apiBaseUrl}/api/v1/user/sports`)
     .then((response) => response.json())
     .then((data) => {
         const valuesArray = Object.values(data);
-
-        setOtherSports(valuesArray.slice(3));
-        setSideSports(valuesArray.slice(1, 3));
+        setLoading((prevState) => {
+          !prevState;
+        });
         if (valuesArray && valuesArray.length > 0) {
-            setSportsData(valuesArray[0]);
+          setSportsData(valuesArray[0]);
+         
+          setSideSports(valuesArray.slice(1, 3));
+          setOtherSports(valuesArray.slice(3));
         }
     })
     .catch((error) => {
         console.error('Error fetching news data:', error);
+        setLoading((prevState) => {
+          !prevState;
+        });
     });
-}, []);
+}, [apiBaseUrl]);
 
  
 
@@ -37,9 +46,14 @@ fetch(`${apiBaseUrl}/api/v1/user/sports`)
     return new Date(dateString).toLocaleString(undefined, options);
   };
 
-  return (
+  return !loading? (
+
+    <>
+    {sportsData.length == 0?(
+      <EmptyContainer/>
+    ):(
+
     <div className='flex flex-col'>
-      <Navbar />
       <h1 className='my-12 py-12 text-[24px] font-bold text-center tracking-wider'>Main Sports  News</h1>
       <div className='flex '>
       <div>
@@ -57,7 +71,7 @@ fetch(`${apiBaseUrl}/api/v1/user/sports`)
           />
             
             <div className='p-4 justify-center  rounded-lg border-gray-300 bg-slate-100 hidden md:block'>
-              {sideSports.map((item, key) => (
+              {sideSports.map((item) => (
                 <OtherCatNews
                 key={item.key}
                 title={item.title}
@@ -88,12 +102,20 @@ fetch(`${apiBaseUrl}/api/v1/user/sports`)
         ))}
       </div>
 
-      <Footer/>
       </div>   
+    )}
+    </>
 
     
     
   
+  ):(
+    <>
+      <div className='h-[100vh] mt-24'>
+
+    <SingleBlogSkeleton/>
+      </div>
+    </>
   )
 }
 

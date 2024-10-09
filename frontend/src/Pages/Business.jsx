@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from 'react';
-import Navbar from '../Component/Navbar'
-import Footer from '../Component/Footer'
+import { useEffect, useState } from 'react';
 import MainCatNews from '../Component/Category/MainCatNews.jsx'
 import OtherCatNews from '../Component/Category/OtherCatNews.jsx';
 import NewsCard from '../Component/homePage/NewsCard.jsx';
+import SingleBlogSkeleton from '../Skeleton/SingleBlogSkeleton';
+import EmptyContainer from '../Component/EmptyContainer.jsx';
 
 
 function Business  () {
@@ -11,6 +11,8 @@ function Business  () {
   const [businessData, setBusinessData] = useState([]);
   const [sideBusiness, setSideBusiness] = useState([]);
   const [otherBusiness, setOtherBusiness] = useState([]);
+  const [loading, setLoading] = useState(true);
+
   const apiBaseUrl = import.meta.env.VITE_API_BASE_URL
  useEffect(() => {
   // Fetch news data from the API
@@ -18,17 +20,24 @@ fetch(`${apiBaseUrl}/api/v1/user/business`)
     .then((response) => response.json())
     .then((data) => {
         const valuesArray = Object.values(data);
+        setLoading((prevState) => {
+          !prevState;
+        });
 
-        setOtherBusiness(valuesArray.slice(3,));
-        setSideBusiness(valuesArray.slice(1, 3));
         if (valuesArray && valuesArray.length > 0) {
-            setBusinessData(valuesArray[0]);
+          setBusinessData(valuesArray[0]);
+          
+          setSideBusiness(valuesArray.slice(1, 3));
+          setOtherBusiness(valuesArray.slice(3,));
         }
     })
     .catch((error) => {
         console.error('Error fetching news data:', error);
+        setLoading((prevState) => {
+          !prevState;
+        });
     });
-}, []);
+}, [apiBaseUrl]);
 
  
 
@@ -37,9 +46,13 @@ fetch(`${apiBaseUrl}/api/v1/user/business`)
     return new Date(dateString).toLocaleString(undefined, options);
   };
 
-  return (
+  return !loading? (
+    <>
+    {businessData.length == 0?(
+      <EmptyContainer/>
+    ):(
+
     <div className="flex flex-col">
-      <Navbar />
       <h1 className="my-12 py-12 text-[24px] font-bold text-center tracking-wider">
         Main Business News
       </h1>
@@ -58,7 +71,7 @@ fetch(`${apiBaseUrl}/api/v1/user/business`)
             />
 
             <div className="px-4 mx-auto sm:max-w-xl md:max-w-full lg:max-w-screen-xl md:px-20 lg:px-40 lg:py-12">
-              {sideBusiness.map((item, key) => (
+              {sideBusiness.map((item) => (
                 <OtherCatNews
                 key={item.id}
                 title={item.title}
@@ -89,8 +102,18 @@ fetch(`${apiBaseUrl}/api/v1/user/business`)
         ))}
       </div>
 
-      <Footer />
     </div>
+    )}
+    
+    </>
+
+  ):(
+    <>
+      <div className='h-[100vh] mt-24'>
+
+    <SingleBlogSkeleton/>
+      </div>
+    </>
   );
 }
 
