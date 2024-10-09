@@ -2,7 +2,7 @@
 import { motion } from "framer-motion";
 import { IoMdTime } from "react-icons/io";
 import { Typewriter } from "react-simple-typewriter";
-import pic from '/public/images/profile.png'
+import pic from '/images/profile.png'
 
 function Content(props) {
   const id = props.id;
