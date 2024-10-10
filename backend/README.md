@@ -39,31 +39,23 @@ user@username:~$ flask run  # use this command to start the server
 A limited number of blogs from each category are displayed here . Blogs are displayed according to the time they were created with the latest blog being the first.
 
 - url: GET [{{dev_base_url}}/api/v1/user/]()
-
-- The response body of the _ *RESPONSE*_ have the following fields
-
-        +
-      ```python
-      Exampe of a Response Body:
-
-       {
-      "Business": [],
-      "Entertainment": [],
-      "News": [
-          {
-              "author": "Lila Walker",
-              "headline": "Animi et officiis dolores. In praesentium enim quia voluptas enim exercitationem cupiditate voluptatibus. Temporibus ex dolores sed odio minima odio id. Ut quasi ea at.",
-              "id": 2,
-              "image": "https://res.cloudinary.com/dqrw1zi7d/image/upload/v1728562068/Mmust-Josa_1728562067.jpg",
-              "published_on": "Thu, 10 Oct 2024 11:55:06 GMT",
-              "slug": "qui-ad-sed-unde.",
-              "title": "Qui ad sed unde."
-          },
-      ],
-      "Sports": []
-
-  }
-  ```
+  ```json
+{
+  "Business": [],
+  "Entertainment": [],
+  "News": [
+    {
+      "author": "Lila Walker",
+      "headline": "Animi et officiis dolores. In praesentium enim quia voluptas enim exercitationem cupiditate voluptatibus. Temporibus ex dolores sed odio minima odio id. Ut quasi ea at.",
+      "id": 2,
+      "image": "https://res.cloudinary.com/dqrw1zi7d/image/upload/v1728562068/Mmust-Josa_1728562067.jpg",
+      "published_on": "Thu, 10 Oct 2024 11:55:06 GMT",
+      "slug": "qui-ad-sed-unde.",
+      "title": "Qui ad sed unde."
+    }
+  ],
+  "Sports": []
+}
 
 - Note: Only three blogs per category are returned in the response
 
