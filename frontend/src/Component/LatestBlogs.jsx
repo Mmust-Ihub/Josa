@@ -2,6 +2,7 @@
 import { Link } from 'react-router-dom';
 import { useEffect, useState } from "react";
 
+
 import { Clock } from 'lucide-react';
 
 
@@ -35,9 +36,9 @@ const LatestBlogs = () => {
       <div className="space-y-4">
         {blogs.map((blog) => (
           <div key={blog.id} className="flex items-center space-x-4">
-            {/* <img src={blog.image_id} alt={blog.title} className="w-20 h-20 object-cover rounded" /> */}
+           
             <div>
-              <Link to={`/${blog.category}/${blog.id}`} className="font-semibold text-gray-800 hover:text-blue-600 transition duration-300 ease-in-out">
+              <Link to={`/${blog.category}/${blog.slug}`} className="font-semibold text-gray-800 hover:text-blue-600 transition duration-300 ease-in-out">
                 {blog.title}
               </Link>
               <p className="text-sm text-gray-500 flex items-center mt-1">

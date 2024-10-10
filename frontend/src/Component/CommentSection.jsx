@@ -7,6 +7,9 @@ import toast, { Toaster } from "react-hot-toast";
 
 
 const CommentSection= ({ comments, onAddComment,category, image_id }) => {
+
+  console.log('comments: ',comments)
+
   
   const [content, setNewComment] = useState('');
   const [isAnonymous, setIsAnonymous] = useState(false);
@@ -32,7 +35,6 @@ const CommentSection= ({ comments, onAddComment,category, image_id }) => {
           if(responseData){
             setIsAnonymous(true);
             setNewComment("");
-            toast.success("Comment Successfull Posted 🚀🚀");
           }
           setIsAnonymous(true);
           setNewComment("");

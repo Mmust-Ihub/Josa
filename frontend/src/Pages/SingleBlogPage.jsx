@@ -4,6 +4,8 @@ import LatestBlogs from '../Component/LatestBlogs';
 import CommentSection from '../Component/CommentSection';
 import Skeleton from '../component/Skeleton';
 import NotFound from '../Component/NotFound';
+import pic from '/images/profile.png'
+
 
 
 const SingleBlogPage = () => {
@@ -11,8 +13,10 @@ const SingleBlogPage = () => {
   const [blog, setBlog] = useState(null);
   const [loading, setLoading] = useState(true);
   const [isBlog, setIsBlog] = useState(true);
-  
 
+  const params = useParams()
+  
+console.log(params)
 
   const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
   useEffect(() => {
@@ -22,8 +26,7 @@ const SingleBlogPage = () => {
          await  fetch(`${apiBaseUrl}/api/v1/user/${category}/${slug}`)
          .then((response) => {
         
-
-          if (response.status === 404 || response.status === 400) {
+          if (response.status !== 200) {
             setIsBlog(false); 
             return null;
           }
@@ -45,6 +48,7 @@ const SingleBlogPage = () => {
    
    
   }, [apiBaseUrl, slug, category]);
+
 
 
 
@@ -78,6 +82,7 @@ const SingleBlogPage = () => {
     return <NotFound />;
   }
 
+
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -85,7 +90,7 @@ const SingleBlogPage = () => {
           <img src={blog.image} alt={blog.title} className="w-full h-64 object-cover rounded-lg mb-6" />
           <h1 className="text-3xl font-bold text-gray-800 mb-4">{blog.title}</h1>
           <div className="flex items-center mb-6">
-            <img src={blog.author_image} alt={blog.author} className="w-12 h-12 rounded-full mr-4" />
+            <img src={blog.author_image || pic} alt={blog.author} className="w-12 h-12 rounded-full mr-4" />
             <div>
               <p className="font-semibold text-gray-800">{blog.author}</p>
               <p className="text-sm text-gray-500">{new Date(blog.published_on).toLocaleString()}</p>

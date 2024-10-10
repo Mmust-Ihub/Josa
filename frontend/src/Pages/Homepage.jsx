@@ -1,12 +1,13 @@
 import  { useEffect, useState, Suspense } from "react";
-import MainNews from "../Component/homePage/MainNews";
-import NewsCard from "../Component/homePage/NewsCard";
 import LoadingSpinner from "../Component/LoadingSpinner";
-import Heading from "../Component/homePage/Heading";
 import { motion } from "framer-motion";
 import { Helmet } from "react-helmet";
 import toast, { Toaster } from "react-hot-toast";
 import BlogsSkeleton from "../Skeleton/BlogsSkeleton";
+import CategoryNews from "../Component/CategoryNews";
+import MainNews from "../Component/MainsNews";
+import Skeleton from '../component/Skeleton';
+
 function Homepage() {
   const [latestData, setLatestData] = useState([]);
   const [newsData, setNewsData] = useState([]);
@@ -17,12 +18,13 @@ function Homepage() {
 
   const apiBaseUrl = import.meta.env.VITE_API_BASE_URL
 
+ 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // Fetch latest news data
         const latestResponse = await fetch(
           `${apiBaseUrl}/api/v1/user`
+          
         );
         setLoading((prevState) => {
           !prevState;
@@ -31,36 +33,33 @@ function Homepage() {
         const latestNews = await latestData.News
         setLatestData(latestNews.slice(0, 1));
 
-        // Fetch business data
         const businessRequest = await fetch(
-          `${apiBaseUrl}/api/v1/user`
+          `${apiBaseUrl}/api/v1/user/business`
         );
         const businessData = await businessRequest.json();
-        const latestBusiness = await businessData.Business
-        setBusinessData(latestBusiness.slice(0, 3));
+        
+        setBusinessData(Object.values(businessData).slice(0, 3));
 
-        // Fetch entertainment data
         const entertainmentRequest = await fetch(
-          `${apiBaseUrl}/api/v1/user`
+          `${apiBaseUrl}/api/v1/user/entertainment`
         );
         const response = await entertainmentRequest.json();
-        const entertainmentData = await response.Entertainment
-        setEntertainmentData(entertainmentData.slice(0, 3));
+        setEntertainmentData(Object.values(response).slice(0, 3));
 
         // Fetch sports data
         const sportsRequest = await fetch(
-          `${apiBaseUrl}/api/v1/user`
+          `${apiBaseUrl}/api/v1/user/sports`
         );
         const sportsResponse = await sportsRequest.json();
-        const sportsData = await sportsResponse.Sports
-        setSportsData(sportsData.slice(0, 3));
+       
+        setSportsData(Object.values(sportsResponse).slice(0, 3));
 
         // Fetch news data
         const newsResponse = await fetch(
           `${apiBaseUrl}/api/v1/user/news`
         );
         const newsData = await newsResponse.json();
-        setNewsData(newsData.slice(1, 4));
+        setNewsData(Object.values(newsData).slice(1, 4));
 
 
        
@@ -71,7 +70,7 @@ function Homepage() {
         console.error("Error fetching data:", error);
         setLoading((prevState) => {
           !prevState;
-        }); // Set loading to false even if there's an error
+        }); 
       }
     };
 
@@ -79,7 +78,33 @@ function Homepage() {
   }, [apiBaseUrl]);
 
 
-  return !loading?  (
+
+
+  if (loading) {
+    return (
+      <div className="container mx-auto px-4 py-8">
+        <Skeleton type="main" />
+        <div className="mt-8 space-y-8">
+          {['Sports', 'Business', 'Entertainment'].map((category) => (
+            <div key={category}>
+              <div className="flex justify-between items-center mb-4">
+                <div className="h-6 bg-gray-300 rounded w-1/4"></div>
+                <div className="h-4 bg-gray-300 rounded w-20"></div>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                {[1, 2, 3].map((i) => (
+                  <Skeleton key={i} type="card" />
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+
+  return   (
     <div className=" overflow-x-hidden">
       <div className="px-4 mx-auto sm:max-w-xl md:max-w-full lg:max-w-screen-xl md:px-20 lg:px-40 lg:py-12">
         <Toaster />
@@ -122,18 +147,13 @@ function Homepage() {
           {latestData.map((item) => (
             <MainNews
               key={item.id}
-              id={item.id}
-              title={item.title}
-              slug={item.slug}
-              headline={item.headline}
               category={"news"}
-              published_on={new Date(item.published_on).toLocaleDateString()}
-              image={item.image}
+              blog={item}
             />
           ))}
         </Suspense>
 
-     {businessData.length == 0 && sportsData.length == 0 && newsData.length == 0 && entertainmentData.length == 0 ?(
+     {businessData?.length == 0 && sportsData?.length == 0 && newsData?.length == 0 && entertainmentData?.length == 0 ?(
       <>
           <div className='mt-12 gap-4 flex flex-col'>
           <BlogsSkeleton/>
@@ -143,26 +163,17 @@ function Homepage() {
           </div>
           </>     ):(
       <>
-         {businessData.length > 0 ? (
+         {newsData.length > 0 ? (
           <>
-            <Heading title={"Business News"} category="business"  />
+            
             {loading ? (
               <BlogsSkeleton />
             ) : (
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                {businessData.map((item) => (
-                  <NewsCard
-                    key={item.id}
-                    category={"business"}
-                    id={item.id}
-                    title={item.title}
-                    slug={item.slug}
-                    headline={item.headline}
-                    image={item.image}
-                    published_on={new Date(item.published_on).toLocaleDateString()}
-                  />
-                ))}
-              </div>
+            
+     <CategoryNews category={'News'} blogs={newsData}/>
+
+                
+               
             )}
           </>
         ) : null}
@@ -174,28 +185,15 @@ function Homepage() {
                 {/* Entertainment News */}
                 {entertainmentData.length > 0 ? (
           <>
-              <Heading title={"Entertainment News"} category="entertainment"  />
+             
                
         
                {loading?(
                      <BlogsSkeleton/>
                    ):
                    (
-        
-                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                   {entertainmentData.map((item) => (
-                     <NewsCard
-                       key={item.id}
-                       category={"entertainment"}
-                       id={item.id}
-                       title={item.title}
-                       slug={item.slug}
-                       headline={item.headline}
-                       image={item.image}
-                       published_on={new Date(item.published_on).toLocaleDateString()}
-                     />
-                   ))}{" "}
-                 </div>
+                    <CategoryNews category={'Entertainment'} blogs={entertainmentData}/>
+                
                    )}
           </>
         ) : null}
@@ -204,27 +202,15 @@ function Homepage() {
                 {/* SportsNews */}
           {sportsData.length > 0 ? (
           <>
-               <Heading title={"Sport News"} category="sports"  />
+              
         
         {loading ?(
               <BlogsSkeleton/>
             ):
             (
         
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {sportsData.map((item) => (
-              <NewsCard
-                key={item.id}
-                category={"sports"}
-                id={item.id}
-                title={item.title}
-                slug={item.slug}
-                headline={item.headline}
-                image={item.image}
-                published_on={new Date(item.published_on).toLocaleDateString()}
-              />
-            ))}
-          </div>
+              <CategoryNews category={'Sports'} blogs={sportsData}/>
+
             )}
           </>
         ) : null}
@@ -235,9 +221,9 @@ function Homepage() {
                
                 {/* News */}
         
-                {newsData.length > 0 ? (
+                {businessData.length > 0 ? (
           <>
-                 <Heading title={"Other News"} category="news"  />
+                
         
                 
         
@@ -246,20 +232,8 @@ function Homepage() {
           <BlogsSkeleton/>
         ):
         (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {newsData.map((item) => (
-            <NewsCard
-              key={item.id}
-              category={"news"}
-              id={item.id}
-              title={item.title}
-              slug={item.slug}
-              headline={item.headline}
-              image={item.image_id}
-              published_on={new Date(item.published_on).toLocaleDateString()}
-            />
-          ))}
-        </div>
+          <CategoryNews category={'Business'} blogs={businessData}/>
+
         )}
           </>
         ) : null}
@@ -272,7 +246,5 @@ function Homepage() {
       </div>
     </div>
   ) 
-:(
-  <LoadingSpinner/>
-)}
+}
 export default Homepage;
