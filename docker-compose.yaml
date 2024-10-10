@@ -14,7 +14,7 @@ services:
       DATABASE_URI: postgresql://admin:admin@db:5432
     deploy:
       mode: Replicated
-      replicas: 1
+      replicas: 2
       restart_policy:
         condition: on-failure
         delay: 5s
