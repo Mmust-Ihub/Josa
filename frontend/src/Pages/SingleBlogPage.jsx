@@ -14,9 +14,7 @@ const SingleBlogPage = () => {
   const [loading, setLoading] = useState(true);
   const [isBlog, setIsBlog] = useState(true);
 
-  const params = useParams()
   
-console.log(params)
 
   const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
   useEffect(() => {
@@ -30,12 +28,13 @@ console.log(params)
             setIsBlog(false); 
             return null;
           }
+
+         
           return response.json();
         })
          
          .then((data) => {
-                  const valuesArray = Object.values(data);
-                 setBlog(valuesArray);
+                 setBlog(data);
  })
       } catch (error) {
         console.error('Error fetching single blog:', error);
@@ -87,7 +86,7 @@ console.log(params)
     <div className="container mx-auto px-4 py-8">
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2">
-          <img src={blog.image} alt={blog.title} className="w-full h-64 object-cover rounded-lg mb-6" />
+          <img src={blog.image} alt={blog.title} className="w-full h-64 md:h-[350px] object-cover rounded-lg mb-6" />
           <h1 className="text-3xl font-bold text-gray-800 mb-4">{blog.title}</h1>
           <div className="flex items-center mb-6">
             <img src={blog.author_image || pic} alt={blog.author} className="w-12 h-12 rounded-full mr-4" />

@@ -7,7 +7,6 @@ import pic from '/images/profile.png'
 
 const CategoryNews= ({ category, blogs }) => {
 
-  console.log(blogs,category)
   return (
     <div className="bg-white shadow-lg rounded-lg overflow-hidden p-6 mt-8 space-y-8">
       <div className="flex justify-between items-center mb-4">

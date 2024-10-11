@@ -23,7 +23,10 @@ class App extends React.Component {
     return (
       <Router>
         <div className="flex flex-col min-h-screen">
+          <div className="h-[10vh]">
+
           <Navbar />
+          </div>
           <main className="flex-grow">
             <Routes>
               <Route path="/" element={<Homepage />} />
