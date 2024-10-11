@@ -1,5 +1,4 @@
 import  { useEffect, useState, Suspense } from "react";
-import LoadingSpinner from "../Component/LoadingSpinner";
 import { motion } from "framer-motion";
 import { Helmet } from "react-helmet";
 import toast, { Toaster } from "react-hot-toast";
@@ -135,7 +134,7 @@ function Homepage() {
             duration: 1,
           }}
         >
-          <h1 className="mt-20 flex text-2xl font-bold text-[26px] justify-left -mb-8 underline decoration-gray-400">
+          <h1 className=" flex text-2xl font-bold text-[26px] justify-left  underline decoration-gray-400">
             Top News
           </h1>
         </motion.div>

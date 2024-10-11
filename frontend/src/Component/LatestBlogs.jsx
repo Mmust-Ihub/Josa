@@ -39,7 +39,7 @@ const LatestBlogs = () => {
 
 
   return (
-    <div className="bg-white shadow-lg rounded-lg overflow-hidden p-6">
+    <div className="bg-white shadow-lg rounded-lg overflow-hidden p-6 ">
       <h2 className="text-2xl font-bold text-gray-800 mb-4">Latest Blogs</h2>
       <div className="space-y-4">
         {blogs.map((blog) => (

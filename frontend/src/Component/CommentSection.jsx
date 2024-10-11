@@ -15,6 +15,8 @@ const CommentSection= ({category, onAddComment, image_id }) => {
   const [content, setNewComment] = useState('');
   const [isAnonymous, setIsAnonymous] = useState(false);
   const [comments,setComments]= useState([])
+  const [loading, setLoading] = useState(false);
+
   const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
 
   const fetchComments = useCallback(async ()=>{
@@ -53,6 +55,8 @@ const CommentSection= ({category, onAddComment, image_id }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
+
     if (content.trim()) {
       const contentWithoutSpaces = content.replace(/\s/g, "");
     if (contentWithoutSpaces.length > 6) {
@@ -74,9 +78,13 @@ const CommentSection= ({category, onAddComment, image_id }) => {
           if(responseData){
             setIsAnonymous(true);
             setNewComment("");
+            setLoading(false);
+
           }
           setIsAnonymous(true);
           setNewComment("");
+          setLoading(false);
+
           toast.success("Comment Successfull Posted 🚀🚀");
           fetchComments()
 
@@ -105,12 +113,12 @@ const CommentSection= ({category, onAddComment, image_id }) => {
           value={content}
           onChange={(e) => setNewComment(e.target.value)}
           placeholder="Write a comment..."
-          className="w-full p-2 border rounded-lg resize-none"
+          className="w-full p-2 border rounded-lg resize-none outline-blue-500"
           rows={3}
         ></textarea>
         <button type="submit" className="mt-2 bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg flex items-center">
           <Send size={18} className="mr-2" />
-          Post Comment
+          {loading? 'Posting Comment...':'Post Comment'}
         </button>
       </form>
       <div className="space-y-4">

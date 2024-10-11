@@ -12,8 +12,8 @@ const MainNews = ({ category,blog }) => {
 
   const sanitizedSlug = DOMPurify.sanitize(blog.slug, { ALLOWED_TAGS: [], ALLOWED_ATTR: [] });
   return (
-    <div className="bg-white shadow-lg rounded-lg overflow-hidden mt-8 space-y-8">
-      <img src={blog.image} alt={blog.title} className="w-full h-[380px] object-cover" />
+    <div className="bg-white shadow-lg rounded-lg overflow-hidden  space-y-8">
+      <img src={blog.image} alt={blog.title} className="w-full h-64 md:h-[350px] object-cover" />
       <div className="p-6">
         <Link to={`/${category}/${blog.slug}`} className="text-2xl font-bold text-gray-800 hover:text-blue-600 transition duration-300 ease-in-out">
           {blog.title}

@@ -10,7 +10,7 @@ const MainNews = ({ blog,category }) => {
 
   return (
     <div className="bg-white shadow-lg rounded-lg overflow-hidden">
-      <img src={blog.image_id} alt={blog.title} className="w-full h-[350px] object-cover" />
+      <img src={blog.image_id} alt={blog.title} className="w-full h-64 md:h-[350px] object-cover" />
       <div className="p-6">
         <Link to={`/${category}/${blog.slug}`} className="text-2xl font-bold text-gray-800 hover:text-blue-600 transition duration-300 ease-in-out">
           {blog.title}
