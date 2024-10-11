@@ -1,6 +1,6 @@
 # MMUST-JOSA Backend
 
-This project contains code for a blogging web application that will enable users to easily share, express and publish content in the form of blogs.
+This project contains code for a postging web application that will enable users to easily share, express and publish content in the form of posts.
 
 <div align="center">
 
@@ -34,38 +34,40 @@ user@username:~$ flask run  # use this command to start the server
 
 # USERS
 
-## Home page of the blog app
+## Home page of the post app
 
-A limited number of blogs from each category are displayed here . Blogs are displayed according to the time they were created with the latest blog being the first.
+A limited number of posts from each category are displayed here . posts are displayed according to the time they were created with the latest post being the first.
 
 - url: GET [{{dev_base_url}}/api/v1/user/]()
+
   ```json
-{
-  "Business": [],
-  "Entertainment": [],
-  "News": [
-    {
-      "author": "Lila Walker",
-      "headline": "Animi et officiis dolores. In praesentium enim quia voluptas enim exercitationem cupiditate voluptatibus. Temporibus ex dolores sed odio minima odio id. Ut quasi ea at.",
-      "id": 2,
-      "image": "https://res.cloudinary.com/dqrw1zi7d/image/upload/v1728562068/Mmust-Josa_1728562067.jpg",
-      "published_on": "Thu, 10 Oct 2024 11:55:06 GMT",
-      "slug": "qui-ad-sed-unde.",
-      "title": "Qui ad sed unde."
-    }
-  ],
-  "Sports": []
-}
+  {
+    "Business": [],
+    "Entertainment": [],
+    "News": [
+      {
+        "author": "Lila Walker",
+        "headline": "Animi et officiis dolores. In praesentium enim quia voluptas enim exercitationem cupiditate voluptatibus. Temporibus ex dolores sed odio minima odio id. Ut quasi ea at.",
+        "id": 2,
+        "image": "https://res.cloudinary.com/dqrw1zi7d/image/upload/v1728562068/Mmust-Josa_1728562067.jpg",
+        "published_on": "Thu, 10 Oct 2024 11:55:06 GMT",
+        "slug": "qui-ad-sed-unde.",
+        "title": "Qui ad sed unde."
+      }
+    ],
+    "Sports": []
+  }
+  ```
 
-- Note: Only three blogs per category are returned in the response
+- Note: Only three posts per category are returned in the response
 
-## News Blogs
+## News posts
 
-when a user clicks on the news button on the navbar, the frontend sends a request to the backed which then returnes all blogs associated with the news category.
+when a user clicks on the news button on the navbar, the frontend sends a request to the backed which then returnes all posts associated with the news category.
 
 - url: GET [{{dev_base_url}}/api/v1/user/news]()
 
-- The response body is a list/array of all the news blogs.
+- The response body is a list/array of all the news posts.
 - ```json
   [
     {
@@ -78,13 +80,13 @@ when a user clicks on the news button on the navbar, the frontend sends a reques
   ]
   ```
 
-## Business Blogs
+## Business posts
 
-when a user clicks on the business button on the navbar, the frontend sends a request to the backed which then returnes all blogs associated with the business category.
+when a user clicks on the business button on the navbar, the frontend sends a request to the backed which then returnes all posts associated with the business category.
 
 - url: GET [{{dev_base_url}}/api/v1/user/business]()
 
-- The response body is a list/array of all the business blogs.
+- The response body is a list/array of all the business posts.
 
 - ```json
   [
@@ -98,7 +100,7 @@ when a user clicks on the business button on the navbar, the frontend sends a re
   ]
   ```
 
-## Sports Blogs
+## Sports posts
 
 - url: GET [{{dev_base_url}}/api/v1/user/sports]()
 
@@ -114,7 +116,7 @@ when a user clicks on the business button on the navbar, the frontend sends a re
   ]
   ```
 
-## Entertainment Blogs
+## Entertainment posts
 
 - url: GET [{{dev_base_url}}/api/v1/user/entertainment]()
 - ```json
@@ -129,12 +131,12 @@ when a user clicks on the business button on the navbar, the frontend sends a re
   ]
   ```
 
-## Single Blog
+## Single post
 
-when a user clicks on a single blog, the frontend sends a request with the image_id related to the blog and the category of the blog to the backed where the backend returns all the info related to the blog. on the url below, replace CATEGORY with the the blog category ie Business and imaged_id with the image id.
+when a user clicks on a single post, the frontend sends a request with the image_id related to the post and the category of the post to the backed where the backend returns all the info related to the post. on the url below, replace CATEGORY with the the post category ie Business and imaged_id with the image id.
 
 - url: GET [{{dev_base_url}}/api/v1/user/{category}/{slug}]()
-- where the category is either news, business and the slug of the blog
+- where the category is either news, business and the slug of the post
 
 - ```json
   {
@@ -151,63 +153,56 @@ when a user clicks on a single blog, the frontend sends a request with the image
   }
   ```
 
-## Latest Blog per category
+## Latest post per category
 
 - url: GET [{{dev_base_url}}/api/v1/user/post/latest]()
 
 - ```json
-    {
-      "business": {
-        "headline": "Alias odio laborum quae deleniti et atque tempora. Tenetur sit ea dolores quidem eligendi. Temporibus non est distinctio repellat eum.",
-        "image": "https://res.cloudinary.com/dqrw1zi7d/image/upload/v1728562422/Mmust-Josa_1728562422.jpg",
-        "published_on": "Thu, 10 Oct 2024 12:10:53 GMT",
-        "slug": "magnam-ducimus-similique-laborum-sit-velit-esse-molestias-vitae-ducimus.",
-        "title": "Magnam ducimus similique laborum sit velit esse molestias vitae ducimus."
-      }
+  {
+    "business": {
+      "headline": "Alias odio laborum quae deleniti et atque tempora. Tenetur sit ea dolores quidem eligendi. Temporibus non est distinctio repellat eum.",
+      "image": "https://res.cloudinary.com/dqrw1zi7d/image/upload/v1728562422/Mmust-Josa_1728562422.jpg",
+      "published_on": "Thu, 10 Oct 2024 12:10:53 GMT",
+      "slug": "magnam-ducimus-similique-laborum-sit-velit-esse-molestias-vitae-ducimus.",
+      "title": "Magnam ducimus similique laborum sit velit esse molestias vitae ducimus."
     }
-
+  }
   ```
 
-## User Blogs
+## User posts
 
-This endpoint return all the blog associated with the author.
+This endpoint return all the post associated with the author.
 
 - url: GET [{{dev_base_url}}/api/v1/user/authorposts/{fullname}]()
 
   - where fullname is the name of the author
 
-- ```python
-
-  Exampe of a Response Body
-    [
-      1,
-      [
-        {
-          "image_id": "123.5.jpg",
-          "published_on": "Sun, 12 Nov 2023 11:15:13 GMT",
-          "slug": "This is image with id: 123.5.jpg",
-          "title": "This title was updated by daniel gathaga"
-        }
-      ]
+- ```json
+  {
+    "total": 10,
+    "posts": [
+      {
+        "headline": "Non corporis quas sit eveniet minima reprehenderit voluptas. Facilis sit nesciunt atque ut voluptatem.",
+        "image": "https://res.cloudinary.com/dqrw1zi7d/image/upload/v1727279316/Mmust-Josa_1727279311.png",
+        "published_on": "Wed, 25 Sep 2024 18:48:10 GMT",
+        "slug": "quos-aut-eum-et.",
+        "title": "Quos aut eum et."
+      }
     ]
+  }
   ```
 
-* where 1 is the total number of blogs writen by the author
+* where 1 is the total number of posts writen by the author
 
 ## Create Comment
 
-when a user clicks on a single blog, the frontend sends a request with the image_id related to the blog and the category of the blog to the backed where the backend returns all the info related to the blog. on the url below, replace CATEGORY with the the blog category ie Business and imaged_id with the image id.
+- url: POST [{{dev_base_url}}/api/v1/user/comment/{slug}]()
 
-- url: POST [{{dev_base_url}}/api/v1/user/comment/category>/< id>]()
-- where the category is either News, Business and the id is the image
-- and id is the id associated with that blog
-
-- ```python
-  Request Body:
-      content: string
-      is_anonymous: bool optional
-
+- ```json
+    "content": "string"
+    "is_anonymous": Boolean optional
   ```
+
   The status_code of the response == 201 if the comment was created successfully else a bad request error(400) error is thrown. user should ensure that comment textbox is filled.
 
 # ADMIN
@@ -218,16 +213,12 @@ when a user clicks on a single blog, the frontend sends a request with the image
 
 - url: POST [{{dev_base_url}}/api/v1/auth/register]()
 
-```python
- headers:
-     Content-type: application/json
-
-request body:
-    first_name: string,
-    last_name: string,
-    email: string,
-    password: string,
-    confirm: string
+```json
+    "first_name": "string",
+    "last_name": "string",
+    "email": "string",
+    "password": "string",
+    "confirm": "string"
 ```
 
 The status_code of the response == 201 if the registration is successfull else returns a bad request error.(400).
@@ -235,45 +226,31 @@ user should double check the registration credentials.
 
 ## Admin Login
 
-#### Admin gets logged into the system by making a post request to the following endpoint
-
 - url: POST [{{dev_base_url}}/api/v1/auth/login]()
-
-  ```python
-   headers:
-       Content-type: application/json
-
-  request body:
-      email: string,
-      password: string
+  headers:
+  Content-Type: application/json
+  ```json
+      "email": "string",
+      "password": "string"
   ```
 
-  User is given an access and a refresh token, while The status_code of the response == 200 if the login is successfull else returns unauthorized error.(401).
+## Total posts
 
-## Total Blogs
+#### On the dashboard, admin is able to see the total number of posts. he/she has written.
 
-#### On the dashboard, admin is able to see the total number of blogs. he/she has written.
-
-- url: GET [{{dev_base_url}}/api/v1/admin/total/blogs]()
+- url: GET [{{dev_base_url}}/api/v1/admin/total/posts]()
 - ```python
   headers:
     content-type: application/json
     Authorization: Bearer <token>
   ```
-- ```python
-
-  Example of a response  body.
-
+- ```json
   10
   ```
 
-  - where 10 is the total number of blogs.
-
-  The status_code of the response == 200 if the get request was successful else Unauthorized error (401) is thrown. user should ensure that all the access token is valid.
-
 ## Total Comments
 
-#### On the dashboard, admin is able to see the total comments of the blogs. he/she has written.
+#### On the dashboard, admin is able to see the total comments of the posts. he/she has written.
 
 - url: GET [{{dev_base_url}}/api/v1/admin/total/comments]()
 - ```python
@@ -281,20 +258,13 @@ user should double check the registration credentials.
     content-type: application/json
     Authorization: Bearer <token>
   ```
-- ```python
-
-  Example of a response  body.
-
+- ```json
   10
   ```
 
-  - where 10 is the total number of comments.
+## Latest Five News posts
 
-  The status_code of the response == 200 if the get request was successful else Unauthorized error (401) is thrown. user should ensure that all the access token is valid.
-
-## Latest Five News Blogs
-
-#### On the dashboard, admin is able to see latest five news blogs that he/she has written.
+#### On the dashboard, admin is able to see latest five news posts that he/she has written.
 
 - url: GET [{{dev_base_url}}/api/v1/admin/news/latest]()
 - ```python
@@ -302,341 +272,111 @@ user should double check the registration credentials.
     content-type: application/json
     Authorization: Bearer <token>
   ```
-- ```python
-  The response is an array containing five elements.
+- ```json
+  [
+    {
+      "headline": "<p>Deputy President Rigathi Gachagua has strongly opposed the impeachment ....",
+      "image_id": "https://res.cloudinary.com/dqrw1zi7d/image/upload/v1728353580/Mmust-Josa_1728353578.jpg",
+      "published_on": "Tue, 08 Oct 2024 05:12:48 GMT",
+      "slug": "gachagua-denies-corruption-allegations,-cites-late-brother’s-assets-in-defense",
+      "title": "Gachagua denies corruption allegations, cites late brother’s assets in defense",
+      "total_comments": 0
+    }
+  ]
+  ```
 
-  Example of a response body of a single element in an array
-     {
-  "id": 7,
-  "image": "1234.jpg",
-  "published_on": "Mon, 13 Nov 2023 20:47:48 GMT",
-  "title": "This news blog was added by daniel",
-  "total_comments": 3
+## Update News posts On the dashboard.
+
+#### Since only the latest five news posts are displayed on the dahboard, the admin may need to upadate them.
+
+- url: PUT [{{dev_base_url}}/api/v1/admin/news/latest/update/{slug}]()
+- ```python
+  headers:
+    content-type: application/json
+  ```
+- ```json
+  {
+    "title": "This is an updated title",
+    "slug": "This is an updated description",
+    "body": "This is an updated body"
   }
   ```
 
-  The status_code of the response == 200 if the get request was successful else Unauthorized error (401) is thrown. user should ensure that the access token is valid.
+  The status_code of the response == 202 if the post was updated successfully else a not found error(404) is thrown. user should ensure that the id provided is valid.
 
-## Update News Blogs On the dashboard.
+## Delete News posts On the Dashboard
 
-#### Since only the latest five news blogs are displayed on the dahboard, the admin may need to upadate them.
+#### Admin has the previledge to delete any of the latest news posts
 
-- url: PUT [{{dev_base_url}}/api/v1/admin/news/latest/update/< id>]()
-- ```python
+- url: DELETE [{{dev_base_url}}/api/v1/admin/news/latest/delete/{slug}]()
+- ```json
   headers:
     content-type: application/json
   ```
-- ```python
-  Request Body:
-      title: string
-      slug: string
-      body: string
 
-  Example of a request body
-     {
-      "title": "This is an updated title",
-      "slug": "This is an updated description",
-      "body": "This is an updated body"
-     }
-  ```
+## Total count of posts in a specific category
 
-  The status_code of the response == 202 if the blog was updated successfully else a not found error(404) is thrown. user should ensure that the id provided is valid.
-
-## Delete News Blogs On the Dashboard
-
-#### Admin has the previledge to delete any of the latest news blogs
-
-- url: DELETE [{{dev_base_url}}/api/v1/admin/news/latest/delete/< id>]()
-- ```python
-  headers:
-    content-type: application/json
-  ```
-  The status_code of the response == 204 if the blog was deleted successfully else a not found error(404) is thrown. user should ensure that the image id provided is valid.
-
-## All News Blogs
-
-#### The admin is able to get all the news blogs associated with him/her.
-
-- url: GET [{{dev_base_url}}/api/v1/admin/blogs/news]()
+- url: GET [{{dev_base_url}}/api/v1/admin/posts/total/{category}]()
 - ```python
   headers:
     content-type: application/json
     Authorization: Bearer <token>
   ```
-- ```python
-  The response is an array containing all news blogs and associated comments.
-
-  Example of a response body of a single element in the array
-     {
-  "body": "These sectors will be a tool for integrating communities while advancing ",
-  "comments": [
-    {
-      "commented_on": "Sun, 12 Nov 2023 09:40:15 GMT",
-      "content": "This is another  cool blog",
-      "is_anonymous": false
-    },
-    {
-      "commented_on": "Sun, 12 Nov 2023 09:40:15 GMT",
-      "content": "This is another  cool blog",
-      "is_anonymous": true
-    },
-  ],
-  "image_id": "123457.jpg",
-  "published_on": "Fri, 10 Nov 2023 13:12:40 GMT",
-  "slug": "The problems in Meru are a mix of politics and cultural hate for women ",
-  "title": "The problems in Meru are a mix of politics and cultural hate for women"
+- ```json
+  {
+    "total_comments": 1,
+    "total_posts": 6
   }
   ```
 
-  The status_code of the response == 200 if the get request was successful else Unauthorized error (401) is thrown. user should ensure that the access token is valid. ### Total Number of News Post
+## All posts in a specific category
 
-      + url: GET [{{dev_base_url}}/api/v1/admin/total/news]()
-      +
-         ```python
-         headers:
-           content-type: application/json
-           Authorization: Bearer <token>
-         ```
-         +
-           ```python
-
-           Example of a response  body.
-           10
-             ```
-         - where 10 is the total number of news post.
-
-         The status_code of the response == 200 if the get request was successful else Unauthorized error (401) is thrown. user should ensure that all the access token is valid.
-      ### Total Number of comments associated with news posts
-
-      + url: GET [{{dev_base_url}}/api/v1/admin/total/news/comments]()
-      +
-         ```python
-         headers:
-           content-type: application/json
-           Authorization: Bearer <token>
-         ```
-         +
-           ```python
-
-           Example of a response  body.
-           10
-             ```
-         - where 10 is the total number of comments post.
-
-         The status_code of the response == 200 if the get request was successful else Unauthorized error (401) is thrown. user should ensure that all the access token is valid.
-
-## All Business Blogs
-
-#### The admin is able to get all busness blogs associated with him/her.
-
-- url: GET [{{dev_base_url}}/api/v1/admin/blogs/business]()
+- url: GET [{{dev_base_url}}/api/v1/admin/posts/{category}]()
 - ```python
   headers:
     content-type: application/json
     Authorization: Bearer <token>
   ```
-- ```python
-  The response is an array containing all business blogs and associated comments.
-
-  Example of a response body of a single element in the array
-     {
-  "body": "These sectors will be a tool for integrating communities while advancing ",
-  "comments": [
+- ```json
+  [
     {
-      "commented_on": "Sun, 12 Nov 2023 09:40:15 GMT",
-      "content": "This is another  cool blog",
-      "is_anonymous": false
-    },
-    {
-      "commented_on": "Sun, 12 Nov 2023 09:40:15 GMT",
-      "content": "This is another  cool blog",
-      "is_anonymous": true
-    },
-  ],
-  "image_id": "123457.jpg",
-  "published_on": "Fri, 10 Nov 2023 13:12:40 GMT",
-  "slug": "The problems in Meru are a mix of politics and cultural hate for women ",
-  "title": "The problems in Meru are a mix of politics and cultural hate for women"
-  }
+      "comments": [],
+      "content": "<p>“In his will, my late brother bequeathed his properties, assets, and cash. Among them were ...",
+      "headline": "<p>Deputy President Rigathi Gachagua has strongly ...",
+      "image": "https://res.cloudinary.com/dqrw1zi7d/image/upload/v1728353580/Mmust-Josa_1728353578.jpg",
+      "published_on": "Tue, 08 Oct 2024 05:12:48 GMT",
+      "slug": "gachagua-denies-corruption-allegations,-cites-late-brother’s-assets-in-defense",
+      "title": "Gachagua denies corruption allegations, cites late brother’s assets in defense"
+    }
+  ]
   ```
 
-  The status_code of the response == 200 if the get request was successful else Unauthorized error (401) is thrown. user should ensure that the access token is valid.
-
-  ### Total Number of Business Post
-
-      + url: GET [{{dev_base_url}}/api/v1/admin/total/business]()
-      +
-         ```python
-         headers:
-           content-type: application/json
-           Authorization: Bearer <token>
-         ```
-         +
-           ```python
-
-           Example of a response  body.
-           10
-             ```
-         - where 10 is the total number of news post.
-
-         The status_code of the response == 200 if the get request was successful else Unauthorized error (401) is thrown. user should ensure that all the access token is valid.
-      ### Total Number of comments associated with business posts
-
-      + url: GET [{{dev_base_url}}/api/v1/admin/total/business/comments]()
-      +
-         ```python
-         headers:
-           content-type: application/json
-           Authorization: Bearer <token>
-         ```
-         +
-           ```python
-
-           Example of a response  body.
-           10
-             ```
-         - where 10 is the total number of comments post.
-
-         The status_code of the response == 200 if the get request was successful else Unauthorized error (401) is thrown. user should ensure that all the access token is valid.
-
-## All Sports Blogs
-
-#### The admin is able to get all sports blogs associated with him/her.
-
-- url: GET [{{dev_base_url}}/api/v1/admin/blogs/sports]()
+## Create Post
+> **Data should be sent as form data**
+- url: POST [{{dev_base_url}}/api/v1/admin/createpost]()
 - ```python
   headers:
-    content-type: application/json
+    content-type: multipart/form-data
     Authorization: Bearer <token>
   ```
-
-  The status_code of the response == 200 if the get request was successful else Unauthorized error (401) is thrown. user should ensure that the access token is valid.
-
-  ### Total Number of Sports Post
-
-      + url: GET [{{dev_base_url}}/api/v1/admin/total/sports]()
-      +
-         ```python
-         headers:
-           content-type: application/json
-           Authorization: Bearer <token>
-         ```
-         +
-           ```python
-
-           Example of a response  body.
-           10
-             ```
-         - where 10 is the total number of news post.
-
-         The status_code of the response == 200 if the get request was successful else Unauthorized error (401) is thrown. user should ensure that all the access token is valid.
-      ### Total Number of comments associated with sports posts
-
-      + url: GET [{{dev_base_url}}/api/v1/admin/total/sports/comments]()
-      +
-         ```python
-         headers:
-           content-type: application/json
-           Authorization: Bearer <token>
-         ```
-         +
-           ```python
-
-           Example of a response  body.
-           10
-             ```
-         - where 10 is the total number of comments post.
-
-         The status_code of the response == 200 if the get request was successful else Unauthorized error (401) is thrown. user should ensure that all the access token is valid.
-
-## All Entertainment Blogs
-
-#### The admin is able to get all entertainment blogs associated with him/her.
-
-- url: GET [{{dev_base_url}}/api/v1/admin/blogs/entertainment]()
-- ```python
-  headers:
-    content-type: application/json
-    Authorization: Bearer <token>
-  ```
-
-  The status_code of the response == 200 if the get request was successful else Unauthorized error (401) is thrown. user should ensure that the access token is valid.
-
-  ### Total Number of Entertainment Post
-
-      + url: GET [{{dev_base_url}}/api/v1/admin/total/entertainment]()
-      +
-         ```python
-         headers:
-           content-type: application/json
-           Authorization: Bearer <token>
-         ```
-         +
-           ```python
-
-           Example of a response  body.
-           10
-             ```
-         - where 10 is the total number of news post.
-
-         The status_code of the response == 200 if the get request was successful else Unauthorized error (401) is thrown. user should ensure that all the access token is valid.
-      ### Total Number of comments associated with entertainment posts
-
-      + url: GET [{{dev_base_url}}/api/v1/admin/total/entertainment/comments]()
-      +
-         ```python
-         headers:
-           content-type: application/json
-           Authorization: Bearer <token>
-         ```
-         +
-           ```python
-
-           Example of a response  body.
-           10
-             ```
-         - where 10 is the total number of comments post.
-
-         The status_code of the response == 200 if the get request was successful else Unauthorized error (401) is thrown. user should ensure that all the access token is valid.
-
-## Create Blogs
-
-#### After being logged into the system, admin can be able to create a blog.
-
-- url: POST [{{dev_base_url}}/api/v1/admin/createblog]()
-- ```python
-  headers:
-    content-type: application/json
-    Authorization: Bearer <token>
-  ```
-- ```python
-  Request Body:
-      title: string
-      slug: string
-      body: string
-      image_id: string
-      category: string
-
-  Example of a request body
+- ```json
      {
-      "title": "Title of the blog",
-      "slug": "a brief description about the blog",
-      "body": "The body of the blog",
-      "image_id": "A unique id of an image associated with the blog",
-      "category": "Either of the following: [News, Business, Sports, Entertainment]"
+      "title": "Title of the post",
+      "headline": "a brief description about the post",
+      "content": "The content of the post",
+      "image": "The image file",
+      "category": "Either of the following: [news, business, sports, entertainment]"
 
      }
   ```
 
-  The status_code of the response == 201 if the blog was created successfully else a bad request error(400) is thrown. user should ensure that all the fields above are included.
+## Update posts
 
-## Update Blogs
+#### After being logged into the system, admin can be able to update a post.
 
-#### After being logged into the system, admin can be able to update a blog.
-
-- url: POST [{{dev_base_url}}/api/v1/admin/blogs/update /category/<blog_id>]()
-- replace category with the blog category ie News, Business
-- replace blog_id with the specific blog id ie 1, 2, 3
+- url: POST [{{dev_base_url}}/api/v1/admin/posts/update /category/<post_id>]()
+- replace category with the post category ie News, Business
+- replace post_id with the specific post id ie 1, 2, 3
 - ```python
   headers:
     content-type: application/json
@@ -660,21 +400,18 @@ user should double check the registration credentials.
      }
   ```
 
-  The status_code of the response == 202 if the blog was updated~ successfully else a bad request error(400) is thrown. user should ensure that all the fields above are included.
+  The status_code of the response == 202 if the post was updated~ successfully else a bad request error(400) is thrown. user should ensure that all the fields above are included.
 
-## Delete Blogs
+## Delete posts
 
-#### Admin has the previledge to delete any of his/her blogs
+#### Admin has the previledge to delete any of his/her posts
 
-- url: DELETE [{{dev_base_url}}/api/v1/admin/blogs/delete/category/<id>]()
-  - replace category with the exact category
-  - replace <id> with the specific blog id
+- url: DELETE [{{dev_base_url}}/api/v1/admin/posts/delete/{slug}]()
 - ```python
   headers:
-    content-type: application/json
+    Authorization: Bearer <token>
   ```
-  The status_code of the response == 204 if the blog was deleted successfully else a not found error(404) is thrown. user should ensure that the image id provided is valid.
-    <br>
+  <br>
 
 # ADMIN PROFILE
 
@@ -712,5 +449,3 @@ user should double check the registration credentials.
   }
 
   ```
-
-  The status_code of the response == 200 if the data fetching was a success else Unaunthorized(401) error is thrown. user should ensure that the token provided is valid.
