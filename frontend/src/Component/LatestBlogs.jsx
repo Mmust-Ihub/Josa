@@ -9,15 +9,22 @@ import { Clock } from 'lucide-react';
 const LatestBlogs = () => {
 
   const [blogs, setBlogs] = useState([]);
+  const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
+
 
   useEffect(() => {
-    const apiUrl = "https://mmust-jowa.onrender.com/api/v1/user/blog/latest";
+    const apiUrl = `${apiBaseUrl}/api/v1/user/post/latest`;
 
     fetch(apiUrl)
-      .then((response) => response.json())
+      .then((response) =>{
+       return response.json()
+
+      }
+    )
+        
       .then((data) => {
-      
-        const extractedData = Object.keys(data).map((category) => ({
+        const extractedData = Object.keys(data)
+        .map((category) => ({
           ...data[category],
           category,
         }));
@@ -26,7 +33,8 @@ const LatestBlogs = () => {
         
       })
       .catch((error) => console.error("Error fetching data:", error));
-  }, []);
+  }, [apiBaseUrl]);
+
 
 
 
@@ -35,6 +43,7 @@ const LatestBlogs = () => {
       <h2 className="text-2xl font-bold text-gray-800 mb-4">Latest Blogs</h2>
       <div className="space-y-4">
         {blogs.map((blog) => (
+
           <div key={blog.id} className="flex items-center space-x-4">
            
             <div>

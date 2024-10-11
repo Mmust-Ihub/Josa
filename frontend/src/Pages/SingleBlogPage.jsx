@@ -14,9 +14,7 @@ const SingleBlogPage = () => {
   const [loading, setLoading] = useState(true);
   const [isBlog, setIsBlog] = useState(true);
 
-  const params = useParams()
   
-console.log(params)
 
   const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
   useEffect(() => {
@@ -30,12 +28,13 @@ console.log(params)
             setIsBlog(false); 
             return null;
           }
+
+         
           return response.json();
         })
          
          .then((data) => {
-                  const valuesArray = Object.values(data);
-                 setBlog(valuesArray);
+                 setBlog(data);
  })
       } catch (error) {
         console.error('Error fetching single blog:', error);

@@ -1,25 +1,62 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react/prop-types */
-import  { useState } from 'react';
+import  { useEffect, useState,useCallback } from 'react';
 import { Send } from 'lucide-react';
 import toast, { Toaster } from "react-hot-toast";
+import pic from '/images/profile.png'
 
 
 
 
-const CommentSection= ({ comments, onAddComment,category, image_id }) => {
 
-  console.log('comments: ',comments)
+const CommentSection= ({category, onAddComment, image_id }) => {
 
-  
+
   const [content, setNewComment] = useState('');
   const [isAnonymous, setIsAnonymous] = useState(false);
+  const [comments,setComments]= useState([])
+  const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
+
+  const fetchComments = useCallback(async ()=>{
+   
+      
+        try {
+           await  fetch(`${apiBaseUrl}/api/v1/user/${category}/${image_id}`)
+           .then((response) => {
+          
+            if (response.status !== 200) {
+              return null;
+            }
+  
+           
+            return response.json();
+          })
+           
+           .then((data) => {
+            setComments(data.comments)
+   })
+        } catch (error) {
+          console.error('Error fetching single blog:', error);
+        } 
+   
+     
+     
+    
+
+  })
+
+  useEffect(()=>{
+
+    fetchComments()
+  },[fetchComments])
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (content.trim()) {
       const contentWithoutSpaces = content.replace(/\s/g, "");
     if (contentWithoutSpaces.length > 6) {
-      const url = ` https://mmust-jowa.onrender.com/api/v1/user/comment/${category}/${image_id}`;
+      const url = ` ${apiBaseUrl}/api/v1/user/comment/${image_id}`;
 
       try {
         const response = await fetch(url, {
@@ -30,6 +67,8 @@ const CommentSection= ({ comments, onAddComment,category, image_id }) => {
           body: JSON.stringify({ content, is_anonymous: isAnonymous }),
         });
 
+        console.log(response)
+
         if (response.ok) {
           const responseData = await response.json();
           if(responseData){
@@ -39,6 +78,8 @@ const CommentSection= ({ comments, onAddComment,category, image_id }) => {
           setIsAnonymous(true);
           setNewComment("");
           toast.success("Comment Successfull Posted 🚀🚀");
+          fetchComments()
+
         } else {
           console.error("Error submitting comment:", response.statusText);
         }
@@ -78,13 +119,13 @@ const CommentSection= ({ comments, onAddComment,category, image_id }) => {
             {comments.map((comment) => (
               <div key={comment.id} className="bg-gray-100 p-4 rounded-lg">
                 <div className="flex items-center mb-2">
-                  {/* <img src={comment.author.image} alt={comment.author.name} className="w-8 h-8 rounded-full mr-2" />
-                  <span className="font-semibold">{comment.author.name}</span> */}
+                 <img src={comment.author_image || pic} alt='Commentor Image' className="w-8 h-8 rounded-full mr-2" />
+                  {/* <span className="font-semibold">{comment.author.name}</span>  */}
                   <span className="text-sm text-gray-500 ml-2">
                     {new Date(comment.commented_on).toLocaleString()}
                   </span>
                 </div>
-                <p>{comment.content}</p>
+                <p>{comment.comment}</p>
               </div>
             ))}
             </>
