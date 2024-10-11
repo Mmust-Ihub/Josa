@@ -107,20 +107,8 @@ def get_all_user_posts(fullname):
     first_name = fullname.split(" ")[0]
     all_posts = User.query.filter_by(first_name=first_name).first()
     if all_posts:
-        news_posts = get_user_posts_based_on_category(all_posts.news)
-        business_posts = get_user_posts_based_on_category(all_posts.business)
-        sports_posts = get_user_posts_based_on_category(all_posts.sports)
-        entertainment_posts = get_user_posts_based_on_category(all_posts.entertainment)
-        combined_posts = (
-            news_posts + business_posts + sports_posts + entertainment_posts
-        )
-        total_posts = (
-            len(news_posts)
-            + len(business_posts)
-            + len(sports_posts)
-            + len(entertainment_posts)
-        )
-        return [total_posts, combined_posts], 200
+        number, posts = get_all_user_posts(all_posts.posts.order_by(Post.id.desc()))
+        return jsonify({"total": number, "posts": posts})
     else:
         return {"error": f"No user with username {first_name}"}, 400
 
@@ -130,7 +118,6 @@ def get_all_user_posts(fullname):
 def create_comment(slug):
     """An endpoint to create comment associated with a post"""
     success_message = f"new comment added successfully"
-    error_message = f"Failed to create a new comment. check the image id provided"
     data = request.get_json()
     response = create_comment(slug, data)
     if response:
@@ -244,9 +231,10 @@ def get_latest_post_per_category(category):
         return []
 
 
-def get_user_posts_based_on_category(posts):
+def get_all_user_posts(posts):
     """A function to loop through a specific user posts"""
     serialized = []
+    total = 0
     for post in posts:
         serialized.append(
             {
@@ -254,11 +242,12 @@ def get_user_posts_based_on_category(posts):
                 "slug": post.slug,
                 "headline": post.headline,
                 "image": post.image,
-                "published_on": post.published_on,
+                "published_on": post.date_created,
             }
         )
+        total += 1
 
-    return serialized
+    return total, serialized
 
 
 def create_comment(slug, data):

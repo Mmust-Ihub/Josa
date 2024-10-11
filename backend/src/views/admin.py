@@ -1,9 +1,10 @@
 import os, uuid
-from flask import Blueprint, jsonify, request, current_app
+from flask import Blueprint, jsonify, request
 from flask_cors import cross_origin
+from sqlalchemy import func
 from flask_jwt_extended import get_jwt_identity, jwt_required
 from src.utils.upload import upload_image_to_cloud
-from src.models.database import Post, Comment
+from src.models.database import db, Post, Comment
 from src.celery.task import get_status, upload_image
 from werkzeug.utils import secure_filename
 from decouple import config
@@ -21,7 +22,7 @@ UPLOAD_DIR = config("UPLOAD_DIR")
 def get_admin_total_posts():
     """An endpoint to get the total number of posts owned by admin"""
     user_id = get_jwt_identity()
-    total_posts = get_total_number_of_post(user_id)
+    total_posts = get_total_number_of_posts(user_id)
     if total_posts:
         return total_posts, 200
 
@@ -34,15 +35,9 @@ def get_admin_total_posts():
 def get_admin_total_comments():
     """An endpoint to get the total number of comments owned by admin"""
     user_id = get_jwt_identity()
-    news_comments = get_posts_and_comments("news", user_id)[1]
-    business_comments = get_posts_and_comments("business", user_id)[1]
-    sports_comments = get_posts_and_comments("sports", user_id)[1]
-    entertainment_comments = get_posts_and_comments("entertainment", user_id)[1]
-    total_comments = (
-        news_comments + business_comments + sports_comments + entertainment_comments
-    )
+    comments = get_posts_and_comments(user_id)[1]
 
-    return str(total_comments), 200
+    return str(comments), 200
 
 
 @admin.route("/news/latest")
@@ -57,15 +52,19 @@ def get_latest_five_news_posts():
         .paginate(page=1, per_page=5, error_out=False)
     )
     serialized = []
-    for post in latest_posts:
-        total_comments = len(post.comments)
+    for post in latest_posts.items:
+        total_comments = (
+            db.session.query(func.count(Comment.id))
+            .filter(Comment.post_id == post.id)
+            .scalar()
+        )
         serialized.append(
             {
                 "title": post.title,
                 "slug": post.slug,
                 "headline": post.headline,
                 "image_id": post.image,
-                "published_on": post.published_on,
+                "published_on": post.date_created,
                 "total_comments": total_comments,
             }
         )
@@ -99,15 +98,15 @@ def delete_post_in_latest(slug):
     return {"error": f"Image with id {id} not found"}, 404
 
 
-@admin.route("/total/news")
+@admin.route("/posts/total/<string:category>")
 @cross_origin()
 @jwt_required()
-def get_admin_total_news_posts():
-    """An endpoint to get the total number of news posts owned by author"""
+def get_admin_total_news_posts(category):
+    """An endpoint to get the total number of posts owned by author per category"""
     user_id = get_jwt_identity()
-    news_and_comments = get_posts_and_comments(user_id)
+    data = posts_per_category(user_id, category)
 
-    return news_and_comments, 200
+    return jsonify(data), 200
 
 
 @admin.route("/posts/<string:category>")
@@ -124,43 +123,11 @@ def get_all_user_news__posts(category):
     seliarized_posts = seliarize_user_posts(user_posts)
     return seliarized_posts, 200
 
-
-@admin.route("/total/business")
-@cross_origin()
-@jwt_required()
-def get_admin_total_business_posts():
-    """An endpoint to get the total number of business posts owned by author"""
-    user_id = get_jwt_identity()
-    business_and_comments = get_posts_and_comments(user_id)
-
-    return business_and_comments, 200
-
-
-@admin.route("/total/sports")
-@cross_origin()
-@jwt_required()
-def get_admin_total_sports_posts():
-    """An endpoint to get the total number of sports posts owned by author"""
-    user_id = get_jwt_identity()
-    sports_and_comments = get_posts_and_comments(user_id)
-
-    return sports_and_comments, 200
-
-
-@admin.route("/total/entertainment")
-@cross_origin()
-@jwt_required()
-def get_admin_total_entertainment_posts():
-    user_id = get_jwt_identity()
-    entertainment_and_comments = get_posts_and_comments(user_id=user_id)
-
-    return entertainment_and_comments, 200
-
 @admin.post("/createpost")
 @cross_origin()
 @jwt_required()
 def create_new_post():
-    """ An endpoint to create  a post """
+    """An endpoint to create  a post"""
     try:
         user_id = get_jwt_identity()
         data = request.form.to_dict(flat=True)
@@ -178,7 +145,6 @@ def create_new_post():
             return make_response("failed", message, 400)
     except Exception as e:
         return make_response("failed", str(e), 400)
-
 
 
 @admin.route("/posts/delete/<string:slug>", methods=["DELETE"])
@@ -213,10 +179,8 @@ def validate_post_data(post_input) -> bool:
             return False, f"Validation failed: Unexpected fields - {missing}"
 
 
-""" A function to seliarize all posts owned by admin according to posts passed"""
-
-
 def seliarize_user_posts(user_posts) -> list:
+    """A function to seliarize all posts owned by admin according to posts passed"""
     seliarized = []
     for post in user_posts:
         selialized_comments = []
@@ -227,7 +191,7 @@ def seliarize_user_posts(user_posts) -> list:
             selialized_comments.append(
                 {
                     "comment": comment.comment,
-                    "is_anonymous": comment.is_anonymous,
+                    "is_anonymous": True,
                     "commented_on": comment.date_created,
                 }
             )
@@ -238,7 +202,7 @@ def seliarize_user_posts(user_posts) -> list:
                 "headline": post.headline,
                 "image": post.image,
                 "content": post.content,
-                "published_on": post.published_on,
+                "published_on": post.date_created,
                 "comments": selialized_comments,
             }
         )
@@ -258,10 +222,8 @@ def delete_post(slug) -> bool:
     return False
 
 
-""" A function to update  a post """
-
-
 def update_post(slug, data) -> bool:
+    """A function to update  a post"""
     data = Post.query.filter_by(slug=slug).first()
     if data:
         data.title = data.get("title")
@@ -275,30 +237,36 @@ def update_post(slug, data) -> bool:
     return False
 
 
-""" A function to get the number of posts and associated comments """
+def get_posts_and_comments(user_id: int) -> str:
+    """A function to get the number of posts and associated comments"""
+    posts = Post.query.filter_by(user_id=user_id).all()
+    total_posts = len(posts)
+    comments = (
+        db.session.query(func.count(Comment.id))
+        .join(Post)
+        .filter(Post.user_id == user_id)
+        .scalar()
+    )
+    return [total_posts, comments]
 
 
-def get_posts_and_comments(category, user_id: int) -> str:
+def get_total_number_of_posts(user_id: int) -> str:
+    """A fucntion  to get the total number of post owner by user"""
+    posts = get_posts_and_comments(user_id)[0]
+    return str(posts)
+
+def posts_per_category(user_id, category="news"):
     posts = Post.query.filter_by(user_id=user_id, category=category).all()
-    total_news = len(posts)
-    comments = 0
-    for post in posts:
-        comments += len(post.comments)
-
-    return [total_news, comments]
-
-
-""" A fucntion  to get the total number of post owner by user """
-
-
-def get_total_number_of_post(user_id: int) -> str:
-    news_posts = get_posts_and_comments("news", user_id)[0]
-    business_posts = get_posts_and_comments("business", user_id)[0]
-    sports_posts = get_posts_and_comments("sports", user_id)[0]
-    enta_posts = get_posts_and_comments("entertainment", user_id)[0]
-    total_posts = news_posts + business_posts + sports_posts + enta_posts
-    return str(total_posts)
-
+    posts_ids = [post.id for post in posts]
+    comments = (
+        db.session.query(func.count(Comment.id))
+        .filter(Comment.post_id.in_(posts_ids))
+        .scalar()
+    )
+    return {
+        "total_posts":  len(posts),
+        "total_comments": comments
+    }
 
 def make_response(status, message, status_code):
     return jsonify({"status": status, "message": message}), status_code
