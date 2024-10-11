@@ -21,6 +21,7 @@ function Blog() {
 
   useEffect(() => {
     const apiUrl = `${apiBaseUrl}/api/v1/user/${category}/${slug}`;
+    console.log(`This is the api url: ${apiUrl}`)
     setLoading(true);
     setNotFound(false);
 

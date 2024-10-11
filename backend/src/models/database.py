@@ -138,7 +138,7 @@ class Post(db.Model, Helper):
     )
     date_created = db.Column(db.DateTime(), default=datetime.now(), nullable=False)
     date_updated = db.Column(db.DateTime(), default=datetime.now())
-    posts = db.relationship(
+    comments = db.relationship(
         "Comment",
         backref=db.backref("post", lazy="joined"),
         passive_deletes=True,

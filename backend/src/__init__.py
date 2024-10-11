@@ -16,7 +16,7 @@ def create_app(config="dev"):
     app = Flask(__name__)
     app.config.from_object(config_dict[config])
     db.init_app(app=app)
-    migrate.init_app(app=app)
+    migrate.init_app(app=app, db=db)
     JWTManager(app)
     celery_init_app(app=app)
     required_headers = ["Content-Type", "Authorization"]

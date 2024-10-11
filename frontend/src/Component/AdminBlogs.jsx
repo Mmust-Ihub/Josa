@@ -4,13 +4,14 @@ import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { useFormData } from "../../hooks/useFormData";
 function AdminBlogs(props) {
+  const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
    const { formData, updateFormData } = useFormData();
    const navigate = useNavigate();
   const maxwidth = "";
   const image = props.image;
-  const id = props.id;
+  const slug= props.slug;
   const category = props.category;
-  const url = `/Blog/News/${id}`;
+  const url = `/news/${slug}`;
   const title = props.title;
   const published_on = props.published_on;
   const total_comments = props.total_comments;
@@ -18,7 +19,7 @@ function AdminBlogs(props) {
   const deleteBlog = async () => {
     try {
       const response = await fetch(
-        `https://mmust-jowa.onrender.com/api/v1/admin/news/latest/delete/${props.id}`,
+        `${apiBaseUrl}/api/v1/admin/news/latest/delete/${props.slug}`,
         {
           method: "DELETE",
           headers: {
