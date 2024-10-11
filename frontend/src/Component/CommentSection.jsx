@@ -128,7 +128,6 @@ const CommentSection= ({category, onAddComment, image_id }) => {
               <div key={comment.id} className="bg-gray-100 p-4 rounded-lg">
                 <div className="flex items-center mb-2">
                  <img src={comment.author_image || pic} alt='Commentor Image' className="w-8 h-8 rounded-full mr-2" />
-                  {/* <span className="font-semibold">{comment.author.name}</span>  */}
                   <span className="text-sm text-gray-500 ml-2">
                     {new Date(comment.commented_on).toLocaleString()}
                   </span>
@@ -138,7 +137,7 @@ const CommentSection= ({category, onAddComment, image_id }) => {
             ))}
             </>
         ):(
-          <p>No comments available</p>
+          <p>Be the first to comment 🥳🥳</p>
 
         )}
       
