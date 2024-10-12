@@ -86,7 +86,7 @@ const CategoryPage = () => {
   const mainBlog = blogs[0];
   const otherBlogs = blogs.slice(1);
 
-  console.log(otherBlogs)
+ 
 
   return (
     <div className="container mx-auto px-4 py-8 ">
