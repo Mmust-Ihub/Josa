@@ -18,6 +18,8 @@ const SingleBlogPage = () => {
 
   const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
   useEffect(() => {
+
+    
     const fetchData = async () => {
       setLoading(true);
       try {
@@ -26,6 +28,7 @@ const SingleBlogPage = () => {
         
           if (response.status !== 200) {
             setIsBlog(false); 
+            console.error(`Error: Received status ${response.status} from the server`);
             return null;
           }
 
@@ -44,6 +47,8 @@ const SingleBlogPage = () => {
     };
 
     fetchData();
+
+
    
    
   }, [apiBaseUrl, slug, category]);
@@ -97,6 +102,7 @@ const SingleBlogPage = () => {
           </div>
           <div className="prose max-w-none mb-8" dangerouslySetInnerHTML={{ __html: blog.content }}></div>
           <CommentSection comments={blog.comments || []} category={category} image_id={slug}/>
+          
         </div>
         <div className="hidden lg:block">
           <LatestBlogs  />
