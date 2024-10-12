@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import MainNews from "../Component/MainsNews";
 import EmptyContainer from '../Component/EmptyContainer';
-import Skeleton from '../component/Skeleton';
+import Skeleton from '../Component/Skeleton';
 import LatestBlogs from '../Component/LatestBlogs'
 import NotFound from '../Component/NotFound';
 import pic from '/images/profile.png'

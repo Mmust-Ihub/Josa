@@ -2,7 +2,7 @@ import  { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import LatestBlogs from '../Component/LatestBlogs';
 import CommentSection from '../Component/CommentSection';
-import Skeleton from '../component/Skeleton';
+import Skeleton from '../Component/Skeleton';
 import NotFound from '../Component/NotFound';
 import pic from '/images/profile.png'
 
