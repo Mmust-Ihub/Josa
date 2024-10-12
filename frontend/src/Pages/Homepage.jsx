@@ -5,7 +5,7 @@ import toast, { Toaster } from "react-hot-toast";
 import BlogsSkeleton from "../Skeleton/BlogsSkeleton";
 import CategoryNews from "../Component/CategoryNews";
 import MainNews from "../Component/MainsNews";
-import Skeleton from '../component/Skeleton';
+import Skeleton from '../Component/Skeleton'
 
 function Homepage() {
   const [latestData, setLatestData] = useState([]);
