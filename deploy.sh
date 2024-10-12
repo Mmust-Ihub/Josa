@@ -51,8 +51,8 @@ function deploy() {
 }
 
 function main() {
-    # change_path
-    # pull_latest_changes
+    change_path
+    pull_latest_changes
     check_docker_is_running
     stop_running_containers
     deploy
