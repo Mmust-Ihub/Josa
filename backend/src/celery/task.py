@@ -2,7 +2,7 @@ import os, tinify
 from celery.result import AsyncResult
 from celery import shared_task
 from src.utils.upload import upload_image_to_cloud, compress_image
-from src.models.database import Post
+from src.models.database import Post, User
 
 @shared_task(name="upload_image", bind=True, ignore_result=False, autoretry_for=(Exception,), retry_kwargs={'max_retries': 3, 'countdown': 5})
 def upload_image(self, data, filepath):

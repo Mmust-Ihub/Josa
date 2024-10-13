@@ -371,36 +371,7 @@ user should double check the registration credentials.
   ```
 
 ## Update posts
-
-#### After being logged into the system, admin can be able to update a post.
-
-- url: POST [{{dev_base_url}}/api/v1/admin/posts/update /category/<post_id>]()
-- replace category with the post category ie News, Business
-- replace post_id with the specific post id ie 1, 2, 3
-- ```python
-  headers:
-    content-type: application/json
-  ```
-- ```python
-  Request Body:
-      title: string
-      slug: string
-      body: string
-      image_id: string
-      category: string
-
-  Example of a request body
-     {
-      "title": "This is an updated title",
-      "slug": "This is an updated description",
-      "body": "This is an updated body",
-      "image": "This is an updated image",
-      "category": "Either of the following: [News, Business, Sports, Entertainment]"
-
-     }
-  ```
-
-  The status_code of the response == 202 if the post was updated~ successfully else a bad request error(400) is thrown. user should ensure that all the fields above are included.
+ > working on it ....
 
 ## Delete posts
 
@@ -420,19 +391,23 @@ user should double check the registration credentials.
 - url: PUT [{{dev_base_url}}/api/v1/admin/update/profile]()
 - ```python
   headers:
-    content-type: application/json
+    content-type: multipart/form-data
     Authorization: Bearer <token>
   ```
-- ```python
-  Request Body:
-      image: base64 optional
-      first_name: string optional
-      last_name: string optional
-      contact: string optional
+> **If the user wants to change the password, the old and the new password should be submitted *ie***
+- ```json
+  "old_password": "password",
+  "new_password": "new password"
   ```
-  The status_code of the response == 202 if the profile was updated successfully else Unaunthorized(401) error is thrown. user should ensure that the oldpassword is correct and the access token provided is valid.
+- example of a request body
+- ```json
+      "first_name": "string" optional
+      "last_name": "string" optional
+      "email": "string" optional
+      "image": "image file of the user" optional
+  ```
 
-## Get All Admin Profile Info
+## Get Admin Profile Info
 
 - url: GET [{{dev_base_url}}/api/v1/admin/get/profile]()
 - ```python
@@ -440,12 +415,11 @@ user should double check the registration credentials.
     content-type: application/json
     Authorization: Bearer <token>
   ```
-- ```python
+- ```json
   {
-    "contact": "12345678",
+    "email": "user@gmail.com",
     "first_name": "Antony",
     "last_name": "Kariuki",
-    "image_id": null
+    "image_id": "https://res.cloudinary.com/dqrw1zi7d/image/upload/v1728748240/Mmust-Josa_1728748238.jpg"
   }
-
   ```
