@@ -18,7 +18,7 @@ const SingleBlogPage = () => {
 
   const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
   useEffect(() => {
-
+    window.scrollTo(0, 0);
     
     const fetchData = async () => {
       setLoading(true);

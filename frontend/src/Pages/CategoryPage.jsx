@@ -24,6 +24,8 @@ const CategoryPage = () => {
 
 
   useEffect(() => {
+    window.scrollTo(0, 0);
+
     const fetchData = async () => {
       setLoading(true);
       try {
