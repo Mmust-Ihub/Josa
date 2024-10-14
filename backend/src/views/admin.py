@@ -2,12 +2,13 @@ import os, uuid
 from flask import Blueprint, jsonify, request
 from flask_cors import cross_origin
 from sqlalchemy import func
+from decouple import config
 from flask_jwt_extended import get_jwt_identity, jwt_required
-from src.utils.upload import upload_image_to_cloud
-from src.models.database import db, Post, Comment
+from src.utils.password import verify_password
+from src.utils.upload import compress_image, upload_image_to_cloud
+from src.models.database import db, User, Post, Comment
 from src.celery.task import get_status, upload_image
 from werkzeug.utils import secure_filename
-from decouple import config
 
 admin = Blueprint(
     "admin",
@@ -63,7 +64,7 @@ def get_latest_five_news_posts():
                 "title": post.title,
                 "slug": post.slug,
                 "headline": post.headline,
-                "image_id": post.image,
+                "image": post.image,
                 "published_on": post.date_created,
                 "total_comments": total_comments,
             }
@@ -123,6 +124,7 @@ def get_all_user_news__posts(category):
     seliarized_posts = seliarize_user_posts(user_posts)
     return seliarized_posts, 200
 
+
 @admin.post("/createpost")
 @cross_origin()
 @jwt_required()
@@ -147,15 +149,6 @@ def create_new_post():
         return make_response("failed", str(e), 400)
 
 
-@admin.route("/posts/delete/<string:slug>", methods=["DELETE"])
-def delete_post(slug):
-    """An endpoint to delete a post based on the category"""
-    if delete_post(slug):
-        return " ", 204
-
-    return jsonify({"failed": "double check the image_id"}), 404
-
-
 @admin.route("/task/<string:task_id>")
 def check_task_status(task_id):
     """
@@ -163,6 +156,70 @@ def check_task_status(task_id):
     """
     response = get_status(task_id)
     return jsonify(response), 200
+
+
+@admin.route("/posts/delete/<string:slug>", methods=["DELETE"])
+def delete_post(slug):
+    """An endpoint to delete a post based on the category"""
+    if delete_post(slug):
+        return " ", 204
+
+    return jsonify({"failed": "double check the image"}), 404
+
+
+# Admin profile
+@admin.route("/get/profile")
+@cross_origin()
+@jwt_required()
+def get_admin_profile_info():
+    """An endpoint to get  admin profile info"""
+    admin_id = get_jwt_identity()
+    admin = User.query.filter_by(id=admin_id).first()
+    return (
+        jsonify(
+            {
+                "first_name": admin.first_name,
+                "last_name": admin.last_name,
+                "email": admin.email,
+                "image": admin.image,
+            }
+        ),
+        200,
+    )
+
+
+@admin.route("/update/profile", methods=["PUT"])
+@cross_origin()
+@jwt_required()
+def update_admin_profile():
+    admin_id = get_jwt_identity()
+    data = request.form.to_dict(flat=True)
+    file = request.files.get("image", "")
+    admin = User.query.filter_by(id=admin_id).first()
+    if "old_password" in data and "new_password" in data:
+        if not verify_password(data["old_password"], admin.password):
+            return jsonify({"error": "invalid password. Try again"}), 401
+        admin.password = data["new_password"]
+    if file:
+        file_extension = os.path.splitext(file.filename)[1].lower()
+        filename = secure_filename(os.path.join(str(uuid.uuid1()), file_extension))
+        filepath = os.path.join(UPLOAD_DIR, filename)
+        file.save(filepath)
+        compress_image(filepath)
+        image_url = upload_image_to_cloud(filepath)
+        os.remove(filepath)
+        admin.image = image_url
+
+    if "first_name" in data:
+        admin.first_name = data["first_name"]
+
+    if "last_name" in data:
+        admin.last_name = data["last_name"]
+
+    if "email" in data:
+        admin.email = data["email"]
+    admin.update()
+    return make_response("success", "Profile data updated successfully", 202)
 
 
 def validate_post_data(post_input) -> bool:
@@ -255,6 +312,7 @@ def get_total_number_of_posts(user_id: int) -> str:
     posts = get_posts_and_comments(user_id)[0]
     return str(posts)
 
+
 def posts_per_category(user_id, category="news"):
     posts = Post.query.filter_by(user_id=user_id, category=category).all()
     posts_ids = [post.id for post in posts]
@@ -263,10 +321,8 @@ def posts_per_category(user_id, category="news"):
         .filter(Comment.post_id.in_(posts_ids))
         .scalar()
     )
-    return {
-        "total_posts":  len(posts),
-        "total_comments": comments
-    }
+    return {"total_posts": len(posts), "total_comments": comments}
+
 
 def make_response(status, message, status_code):
     return jsonify({"status": status, "message": message}), status_code
