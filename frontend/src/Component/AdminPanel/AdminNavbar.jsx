@@ -14,7 +14,7 @@ const AdminNavbar = ({ onclick, onItemClick }) => {
    
     localStorage.removeItem("accessToken");
     localStorage.removeItem("User");
-    window.location.href = "/Login";
+    window.location.href = "/login";
   };
   return (
     <div className="w-full text-white flex  flex-row bg-gradient-to-r from-indigo-500 via-purple-700 to-pink-500  items-center fixed top-0   md:px-20  justify-between z-[9999]">

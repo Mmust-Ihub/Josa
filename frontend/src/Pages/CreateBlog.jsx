@@ -266,7 +266,7 @@ const CreateBlog = () => {
                     "Naviating to preview, your fields will be saved as draft..."
                   );
                   setTimeout(() => {
-                    navigate("/PreviewBlog", {
+                    navigate("/Admin/PreviewBlog", {
                       state: {
                         formData,
                       },
