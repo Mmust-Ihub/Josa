@@ -1,11 +1,13 @@
-import  { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { User, Calendar, Eye, MessageSquare, Edit } from 'lucide-react';
 import NotFound from '../NotFound';
 import Skeleton from '../Skeleton';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 
-const SingleBlogPage= () => {
-    const { category, slug } = useParams();
+const SingleBlogPage = () => {
+  const { category, slug } = useParams();
   const [blog, setBlog] = useState(null);
   const [loading, setLoading] = useState(true);
   const [isBlog, setIsBlog] = useState(true);
@@ -15,26 +17,26 @@ const SingleBlogPage= () => {
   const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
   useEffect(() => {
     window.scrollTo(0, 0);
-    
+
     const fetchData = async () => {
       setLoading(true);
       try {
-         await  fetch(`${apiBaseUrl}/api/v1/user/${category}/${slug}`)
-         .then((response) => {
-        
-          if (response.status !== 200) {
-            setIsBlog(false); 
-            console.error(`Error: Received status ${response.status} from the server`);
-            return null;
-          }
+        await fetch(`${apiBaseUrl}/api/v1/user/${category}/${slug}`)
+          .then((response) => {
 
-         
-          return response.json();
-        })
-         
-         .then((data) => {
-                 setBlog(data);
- })
+            if (response.status !== 200) {
+              setIsBlog(false);
+              console.error(`Error: Received status ${response.status} from the server`);
+              return null;
+            }
+
+
+            return response.json();
+          })
+
+          .then((data) => {
+            setBlog(data);
+          })
       } catch (error) {
         console.error('Error fetching single blog:', error);
       } finally {
@@ -45,8 +47,8 @@ const SingleBlogPage= () => {
     fetchData();
 
 
-   
-   
+
+
   }, [apiBaseUrl, slug, category]);
 
 
@@ -92,7 +94,7 @@ const SingleBlogPage= () => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto">
+    <div className="max-w-4xl mx-auto mt-4">
       <div className="mb-8">
         <img src={blog.image} alt={blog.title} className="w-full h-64 object-cover rounded-lg shadow-md md:h-[350px]" />
       </div>
@@ -101,7 +103,7 @@ const SingleBlogPage= () => {
           <input
             type="text"
             value={blog.title}
-            onChange={(e) => {e.target.value}}
+            onChange={(e) => { e.target.value }}
             className="text-3xl font-bold mb-4 w-full border-b-2 border-gray-300 focus:outline-none focus:border-blue-500"
           />
         ) : (
@@ -118,13 +120,14 @@ const SingleBlogPage= () => {
           <span>{blog.comments.length} comments</span>
         </div>
         {isEditing ? (
-          <textarea
-            value={blog.content}
-            onChange={(e) => {e.target.value}}
-            className="w-full h-64 p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+          <ReactQuill
+            value={blog.content} onChange={(e) => { e.target.value }}
+            id='content'
+            name='content'
+            className="h-20 mb-4"
           />
         ) : (
-          <p className="text-gray-700 mb-6">{blog.content}</p>
+          <p className="text-gray-700 mb-6" dangerouslySetInnerHTML={{ __html: blog.content }}></p>
         )}
         {isEditing ? (
           <button

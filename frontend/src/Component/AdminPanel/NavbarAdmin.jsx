@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect,useCallback } from "react";
 import pic from '/images/profile.png'
 
 
@@ -6,6 +6,45 @@ export default function Navbar() {
   const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
   const [isCategoriesDropdownOpen, setIsCategoriesDropdownOpen] = useState(false);
   const [isNavbarMenuOpen, setIsNavbarMenuOpen] = useState(false);
+  const [user, setUser]  = useState(null)
+
+  const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
+
+  const handleLogOut = () => {
+   
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("User");
+    window.location.href = "/login";
+  };
+
+  const fetchUser = useCallback(async()=>{
+    await fetch (`${apiBaseUrl}/api/v1/admin/get/profile`,{
+      'content-type': 'application/json',
+      headers: {
+        Authorization: "Bearer " + localStorage.getItem("accessToken"),
+      },
+    })
+    .then((response) => {
+      if (response.status !== 200) {
+        return null;
+      }
+      return response.json();
+    })
+    .then((data) => {
+      setUser(data);
+
+
+
+    })
+  },[apiBaseUrl])
+
+  useEffect(() => {
+    fetchUser()
+    console.log('User',user)
+  }, [fetchUser,user]);
+
+
+
 
   return (
     <>
@@ -23,25 +62,23 @@ export default function Navbar() {
               onClick={() => setIsUserDropdownOpen(!isUserDropdownOpen)}  // Toggle user dropdown
             >
               <span className="sr-only">Open user menu</span>
-              <img className="w-8 h-8 rounded-full" src={pic} alt="user photo" />
+              <img className="w-8 h-8 rounded-full" src={user?.image || pic} alt="user photo" />
             </button>
 
             {/* User Dropdown */}
             {isUserDropdownOpen && (
               <div className="z-50 my-4 text-base list-none bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700 dark:divide-gray-600 absolute right-4 top-16">
                 <div className="px-4 py-3">
-                  <span className="block text-sm text-gray-900 dark:text-white">Bonnie Green</span>
-                  <span className="block text-sm text-gray-500 truncate dark:text-gray-400">name@flowbite.com</span>
+                  <span className="block text-sm text-gray-900 dark:text-white">{user?.first_name}  {user.last_name}</span>
+                  <span className="block text-sm text-gray-500 truncate dark:text-gray-400">{user?.email || 'user@gmail.com'} </span>
                 </div>
                 <ul className="py-2" aria-labelledby="user-menu-button">
+                 
                   <li>
-                    <a href="#" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Settings</a>
+                    <a href="#"  className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Profile</a>
                   </li>
                   <li>
-                    <a href="#" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Earnings</a>
-                  </li>
-                  <li>
-                    <a href="#" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Sign out</a>
+                    <a href="#" onClick={handleLogOut} className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Sign out</a>
                   </li>
                 </ul>
               </div>
@@ -64,7 +101,7 @@ export default function Navbar() {
           <div className={`${isNavbarMenuOpen ? 'block' : 'hidden'} items-center justify-between w-full md:flex md:w-auto md:order-1`} id="navbar-user">
             <ul className="flex flex-col font-medium p-4 md:p-0 mt-4   md:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0  ">
               <li>
-                <a href="#" className="block py-2 px-3 text-white rounded md:bg-transparent md:p-0 " aria-current="page">Home</a>
+                <a href="/" className="block py-2 px-3 text-white rounded md:bg-transparent md:p-0 " aria-current="page">Home</a>
               </li>
               <li>
                 <a href="/Admin" className="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">Dashboard</a>
@@ -85,16 +122,16 @@ export default function Navbar() {
                   <div id="dropdownNavbar" className="absolute left-0 top-full z-10 mt-2 font-normal bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700 dark:divide-gray-600">
                     <ul className="py-2 text-sm text-gray-700 dark:text-gray-400">
                       <li>
-                        <a href="/Admin/news" className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">News</a>
+                        <a href="/Admin/news" onClick={()=>setIsCategoriesDropdownOpen(false)} className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">News</a>
                       </li>
                       <li>
-                        <a href="/Admin/sports" className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Sports</a>
+                        <a href="/Admin/sports" onClick={()=>setIsCategoriesDropdownOpen(false)} className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Sports</a>
                       </li>
                       <li>
-                        <a href="/Admin/business" className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Business</a>
+                        <a href="/Admin/business" onClick={()=>setIsCategoriesDropdownOpen(false)} className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Business</a>
                       </li>
                       <li>
-                        <a href="/Admin/entertainment" className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Entertainment</a>
+                        <a href="/Admin/entertainment" onClick={()=>setIsCategoriesDropdownOpen(false)} className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Entertainment</a>
                       </li>
                     </ul>
                   </div>

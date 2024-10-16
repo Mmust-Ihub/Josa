@@ -7,10 +7,10 @@ import NotFound from '../NotFound';
 import EmptyContainer from '../EmptyContainer';
 import Skeleton from '../Skeleton';
 import toast, { Toaster } from "react-hot-toast";
-import DeleteAction from '../DeleteAction';
+// import DeleteAction from '../DeleteAction';
 
 import Swal from 'sweetalert2';
-import { TrashIcon } from '@heroicons/react/24/outline'
+// import { TrashIcon } from '@heroicons/react/24/outline'
 
 
 
@@ -73,32 +73,7 @@ const CategoryPage = () => {
 
   }, [apiBaseUrl, category]);
 
-  const deleteBlog = async ({ slug }) => {
-    try {
-      await fetch(`${apiBaseUrl}/api/v1/admin/posts/delete/${slug}`,
-        {
-          headers: {
-            Authorization: `Bearer ` + localStorage.getItem("accessToken"),
-          }
-        }
-      )
-        .then((response) => {
-          if (response?.ok) {
-            toast.success('Post deleted successfully')
-          }
-          return response.json();
-        })
-
-    } catch (error) {
-
-      toast.remove()
-
-      toast.error("An error occurred")
-      console.error("An error occurred:", error);
-
-    }
-  }
-
+ 
 
 
   if (loading) {
@@ -193,7 +168,7 @@ const BlogCard = ({ blog, category }) => {
     <div className="bg-white shadow-md rounded-lg overflow-hidden  ">
       <div className="md:flex">
         <div className="md:flex-shrink-0">
-          <img className="h-48 w-full object-cover md:w-48" src={blog.image} alt={blog.title} />
+          <img className="h-48 w-full object-cover md:w-96" src={blog.image} alt={blog.title} />
         </div>
         <div className="p-8">
           <div className="uppercase tracking-wide text-sm text-indigo-500 font-semibold">{blog.author}</div>

@@ -2,13 +2,13 @@ import  { useState,useEffect } from 'react';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import toast, { Toaster } from "react-hot-toast";
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 
 
 const CreateBlogPage = () => {
   const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
 
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   // const { formData, updateFormData } = useFormData();
 
@@ -59,7 +59,7 @@ const CreateBlogPage = () => {
 
       console.log(response)
       if (response?.ok) {
-        toast.remove()
+        // toast.remove()
         toast.success("Blog post created successfully");
         setTitle("");
         setHeadline("");
@@ -103,8 +103,7 @@ const CreateBlogPage = () => {
   return (
     <>
           <Toaster />
-          <div className="max-w-4xl mx-auto">
-      <h1 className="text-3xl font-bold mb-6">Create New Blog</h1>
+       <div className="max-w-4xl mx-auto">
       <form className="bg-white shadow-md rounded-lg p-6" onSubmit={handleSubmit}>
         <div className="mb-4">
           <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-2">
