@@ -82,4 +82,3 @@ def create_app(config="dev"):
 def create_database(app):
     with app.app_context():
         db.create_all()
-        print("database tables created")
