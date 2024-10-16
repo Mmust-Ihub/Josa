@@ -12,53 +12,33 @@ const CreateBlog = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
-    checkUserAuthentication();
   }, []);
 
-  const checkUserAuthentication = async () => {
-    try {
-      const response = await fetch(`${apiBaseUrl}/api/auth/login/check`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: "Bearer " + localStorage.getItem("accessToken"),
-        },
-      });
-
-      if (response.ok) {
-        setIsAuthenticated(true);
-      } else {
-        setIsAuthenticated(false);
-        window.location.href = "/login";
-      }
-    } catch (error) {
-      console.error("An error occurred while checking authentication:", error);
-      setIsAuthenticated(false);
-      if (error == "Error: HTTP error! Status: 401") {
-        window.location.href = "/login";
-      }
-    }
-  };
+  
 
   const handleSubmit = async (event) => {
     const notification = toast.loading("posting your blog...");
     event.preventDefault();
 
-    if (!isAuthenticated) {
-      console.error("User not authenticated. Unable to create a blog.");
-      return (window.location.href = "/login");
-    }
+
+    const formData = new FormData();
+    formData.append("title", formData.title);
+    formData.append("headline", formData.headline);
+    formData.append("content", formData.content);
+    formData.append("category", formData.category);
+    formData.append("image", formDataimage);
+   
 
     try {
       const formDataWithId = { ...formData, image: filePreview };
 
       const response = await fetch(
         // `${apiBaseUrl}/api/v1/admin/createblog`,
-        `http://localhost:4000/api/v1/projects`,
+        `${apiBaseUrl}/api/v1/admin/createpost`,
         {
           method: "POST",
           headers: {
-            "Content-type": "application/json",
+            "Content-type": "multipart/form-data",
             Authorization: "Bearer " + localStorage.getItem("accessToken"),
           },
           body: JSON.stringify(formDataWithId),

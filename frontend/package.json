@@ -12,12 +12,16 @@
     "update-icons": "chmod u+x scripts/icons/update-icons.sh && scripts/icons/update-icons.sh"
   },
   "dependencies": {
+    "@chakra-ui/react": "^2.10.2",
+    "@emotion/react": "^11.13.3",
+    "@emotion/styled": "^11.13.0",
+    "@heroicons/react": "^2.1.5",
     "axios": "^1.6.0",
     "bootstrap": "^5.3.3",
     "cors": "^2.8.5",
     "date-fns": "^2.30.0",
     "dompurify": "^3.1.7",
-    "framer-motion": "^10.16.5",
+    "framer-motion": "^10.18.0",
     "lottie-react": "^2.4.0",
     "lucide-react": "^0.451.0",
     "react": "^18.2.0",
@@ -25,9 +29,12 @@
     "react-helmet": "^6.1.0",
     "react-hot-toast": "^2.4.1",
     "react-icons": "^4.11.0",
+    "react-native": "^0.75.4",
     "react-phone-number-input": "^3.3.7",
+    "react-quill": "^2.0.0",
     "react-router-dom": "^6.26.2",
-    "react-simple-typewriter": "^5.0.1"
+    "react-simple-typewriter": "^5.0.1",
+    "sweetalert2": "^11.14.3"
   },
   "devDependencies": {
     "@iconify/react": "^4.1.1",
