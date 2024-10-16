@@ -6,6 +6,7 @@ import Navbar from "./Component/Navbar";
 import NavbarAdmin from "./Component/AdminPanel/NavbarAdmin";
 import AdminCategoryPage from "./Component/AdminPanel/AdminCategoryPage";
 import AdminSingleBlogPage from "./Component/AdminPanel/AdminSingleBlogPage";
+import ProfilePage from "./Component/AdminPanel/ProfilePage";
 
 import Footer from "./Component/Footer";
 import NotFound from './Component/NotFound';
@@ -14,7 +15,6 @@ import NotFound from './Component/NotFound';
 import Homepage from "./Pages/Homepage";
 import LoginForm from "./Pages/Login";
 import Admin from "./Pages/Admin";
-import CreateBlog from "./Pages/CreateBlog";
 import CB from "./Pages/CB";
 import PreviewBlog from "./Pages/PreviewBlog";
 import EditBlog from "./Pages/EditBlog";
@@ -49,6 +49,7 @@ class App extends React.Component {
               <Route path="/admin" element={<Admin />} />
               <Route path="/login" element={<LoginForm />} />
               <Route path="/Admin/PreviewBlog" element={<PreviewBlog />} />
+              <Route path="/Admin/profile" element={<ProfilePage />} />
               <Route path="/Admin/CreateBlog" element={<CB />} />
               <Route path="/:category" element={<CategoryPage />} />
               <Route path="/Admin/:category" element={<AdminCategoryPage />} />
