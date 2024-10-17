@@ -1,3 +1,5 @@
 test.py
 .env
 docker-compose.prod.yaml
+nginx/nginx.con
+ssl/
