@@ -108,6 +108,8 @@ const CategoryPage = () => {
     return <NotFound />;
   }
   return (
+    <>
+    <Toaster/>
     <div className='md:m-20 m-10'>
       <h1 className="text-3xl font-bold mb-6 capitalize ">{category} Blogs</h1>
       <div className="grid gap-6">
@@ -116,6 +118,7 @@ const CategoryPage = () => {
         ))}
       </div>
     </div>
+    </>
   );
 };
 
