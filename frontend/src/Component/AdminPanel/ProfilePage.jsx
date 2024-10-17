@@ -1,21 +1,20 @@
 
-import React, { useState, useEffect } from 'react';
+import  { useState, useEffect,useCallback } from 'react';
 import { Icon } from '@iconify/react';
 import { User, Mail, Lock } from 'lucide-react';
 
 
 const ProfilePage = () => {
-  const [img, setImg] = useState();
+  const [image, setImage] = useState(null);
+  const [preview, setPreviewImage] = useState(null);
+  const [fName, setFName] = useState('');
+  const [lName, setLName] = useState('');
+  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState('');
 
   const [isEditing, setIsEditing] = useState(false);
 
-  const [profile, setProfile] = useState({
-    firstName: '',
-    lastName: '',
-    email: '',
-    password: '',
-    image: '',
-  });
+
   
   const [profileData, setProfileData] = useState({
     contact: '',
@@ -26,19 +25,13 @@ const ProfilePage = () => {
   const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
 
 
-  const [selectedImage, setSelectedImage] = useState(null);
-  const [imagePreview, setImagePreview] = useState(null);
+ 
 
-  useEffect(() => {
-    if (selectedImage) {
-      const base64Image = selectedImage.split(',')[1];
-      setProfileData(prevData => ({ ...prevData, image_id: base64Image }));
-    }
-  }, [selectedImage]);
+  
   
 
 
-    const fetchData = async () => {
+    const fetchData = useCallback(async () => {
       try {
         const response = await fetch(`${apiBaseUrl}/api/v1/admin/get/profile`, {
           headers: {
@@ -50,16 +43,9 @@ const ProfilePage = () => {
         if (!response.ok) {
           throw new Error('Failed to fetch profileData data');
         }
-         // Assuming the server returns the URL of the uploaded image
+         
          const responseData = await response.json();
-         
-         
-         // Assuming the server returns the URL of the uploaded image
-         const imageUrl = responseData.image_path;
-         
-         setImg(imageUrl);
-     
-         // Set initial profileData data
+
          setProfileData(responseData);
      
          return responseData;
@@ -67,84 +53,59 @@ const ProfilePage = () => {
       } catch (error) {
         console.error(error);
       }
-    };
+    },[apiBaseUrl])
 
     useEffect(() => {
-    fetchData().then((data) => {
-      setProfileData(data); // Set initial profileData data
-    });
-  }, []);
+    fetchData()
+    
+  }, [fetchData])
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setProfile((prev) => ({ ...prev, [name]: value }));
-  };
+
 
   const handleImageChange = (e) => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
-      setProfile((prev) => ({ ...prev, image: URL.createObjectURL(file) }));
+      setImage(file);
+      setPreviewImage(URL.createObjectURL(file));
     }
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    // Implement save logic here
+ 
+  
+  const handleSaveClick = async (event) => {
+    event.preventDefault();
     setIsEditing(false);
-  };
 
 
-  const handleEditClick = () => {
-    setIsEditing(true);
-  };
-  // const handleImageChange = (event) => {
-  //   const file = event.target.files[0];
-  
-  //   if (file) {
-  //     const reader = new FileReader();
-  
-  //     reader.onloadend = () => {
-  //       setSelectedImage(reader.result);
-  //       setImagePreview(reader.result);
-  //     };
-  
-  //     reader.readAsDataURL(file);
-  //   }
-  // };
-  
-
-  
-
-  const handleSaveClick = async () => {
     try {
      
+      const formData = new FormData();
+      formData.append("first_name", fName);
+      formData.append("last_name", lName);
+      formData.append("email", email);
+      formData.append("image", image);
+   
   
-      const requestBody = {
-        contact: profileData.contact,
-        first_name: profileData.first_name,
-        last_name: profileData.last_name,
-        image: selectedImage, // You might need to adjust this depending on how the server expects the image data
-      };
-  
-      const response = await fetch('https://mmust-jowa.onrender.com/api/v1/admin/update/profileData', {
+      const response = await fetch(`${apiBaseUrl}/api/v1/admin/update/profile`, {
         method: 'PUT',
         headers: {
-          'Content-Type': 'application/json',
           'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
         },
-        body: JSON.stringify(requestBody),
+        body: formData,
       });
   
       if (!response.ok) {
         throw new Error('Failed to update profileData data');
       }
-  
-      const updatedData = await fetchData();
-      
-      localStorage.setItem("User",profileData.first_name);
-      setProfileData(updatedData);
+
+       await fetchData()
       setIsEditing(false);
-      setImagePreview(null);
+      setImage(null)
+      setFName('')
+      setLName('')
+      setPreviewImage(null)
+      setImage(null)
+      setEmail('')
     
     } catch (error) {
       console.error(error);
@@ -159,7 +120,7 @@ const ProfilePage = () => {
       <div className="bg-white shadow-md rounded-lg p-6">
         <div className="flex items-center mb-6">
           <img
-            src={profile.image || profileData.image }
+            src={ preview || profileData.image }
             alt="Profile"
             className="w-24 h-24 rounded-full object-cover mr-6"
           />
@@ -170,7 +131,7 @@ const ProfilePage = () => {
             <p className="text-gray-600">{profileData.email}</p>
           </div>
         </div>
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSaveClick}>
           <div className="grid grid-cols-2 gap-4 mb-4">
             <div>
               <label htmlFor="firstName" className="block text-sm font-medium text-gray-700 mb-1">
@@ -181,7 +142,7 @@ const ProfilePage = () => {
                 id="firstName"
                 name="firstName"
                 value={profileData.first_name}
-                onChange={handleInputChange}
+                onChange={(e) => setFName(e.target.value)}
                 disabled={!isEditing}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
@@ -195,7 +156,7 @@ const ProfilePage = () => {
                 id="lastName"
                 name="lastName"
                 value={profileData.last_name}
-                onChange={handleInputChange}
+                onChange={(e) => setLName(e.target.value)}
                 disabled={!isEditing}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
@@ -211,7 +172,7 @@ const ProfilePage = () => {
                 id="email"
                 name="email"
                 value={profileData.email}
-                onChange={handleInputChange}
+                onChange={(e) => setEmail(e.target.value)}
                 disabled={!isEditing}
                 className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
@@ -228,7 +189,7 @@ const ProfilePage = () => {
                 id="password"
                 name="password"
                 value={profileData.password}
-                onChange={handleInputChange}
+                onChange={(e) => setPassword(e.target.value)}
                 disabled={!isEditing}
                 className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
@@ -260,6 +221,7 @@ const ProfilePage = () => {
                   Cancel
                 </button>
                 <button
+                  onClick={handleSaveClick}
                   type="submit"
                   className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
                 >
