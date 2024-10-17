@@ -7,11 +7,6 @@ import toast, { Toaster } from "react-hot-toast";
 
 const CreateBlogPage = () => {
   const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
-
-  // const navigate = useNavigate();
-
-  // const { formData, updateFormData } = useFormData();
-
   const [title, setTitle] = useState("");
   const [headline, setHeadline] = useState("");
   const [content, setContent] = useState("");

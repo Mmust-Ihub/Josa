@@ -1,7 +1,7 @@
 
-import  { useState, useEffect,useCallback } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Icon } from '@iconify/react';
-import { User, Mail, Lock } from 'lucide-react';
+import { User, Mail, Lock , LockOpen} from 'lucide-react';
 
 
 const ProfilePage = () => {
@@ -10,12 +10,14 @@ const ProfilePage = () => {
   const [fName, setFName] = useState('');
   const [lName, setLName] = useState('');
   const [password, setPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
   const [email, setEmail] = useState('');
+  const [showPassword, setShowPassword] = useState(false); 
 
   const [isEditing, setIsEditing] = useState(false);
 
 
-  
+
   const [profileData, setProfileData] = useState({
     contact: '',
     image: '',
@@ -25,39 +27,42 @@ const ProfilePage = () => {
   const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
 
 
- 
 
-  
-  
+  const togglePasswordVisibility = () => {
+    setShowPassword((prevShowPassword) => !prevShowPassword);
+  };
 
 
-    const fetchData = useCallback(async () => {
-      try {
-        const response = await fetch(`${apiBaseUrl}/api/v1/admin/get/profile`, {
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
-          },
-        });
 
-        if (!response.ok) {
-          throw new Error('Failed to fetch profileData data');
-        }
-         
-         const responseData = await response.json();
 
-         setProfileData(responseData);
-     
-         return responseData;
-       
-      } catch (error) {
-        console.error(error);
+
+  const fetchData = useCallback(async () => {
+    try {
+      const response = await fetch(`${apiBaseUrl}/api/v1/admin/get/profile`, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch profileData data');
       }
-    },[apiBaseUrl])
 
-    useEffect(() => {
+      const responseData = await response.json();
+
+      setProfileData(responseData);
+
+      return responseData;
+
+    } catch (error) {
+      console.error(error);
+    }
+  }, [apiBaseUrl])
+
+  useEffect(() => {
     fetchData()
-    
+
   }, [fetchData])
 
 
@@ -70,22 +75,24 @@ const ProfilePage = () => {
     }
   };
 
- 
-  
+
+
   const handleSaveClick = async (event) => {
     event.preventDefault();
     setIsEditing(false);
 
 
     try {
-     
+
       const formData = new FormData();
       formData.append("first_name", fName);
       formData.append("last_name", lName);
       formData.append("email", email);
       formData.append("image", image);
-   
-  
+      formData.append("old_password", password);
+      formData.append("new_password", newPassword);
+
+
       const response = await fetch(`${apiBaseUrl}/api/v1/admin/update/profile`, {
         method: 'PUT',
         headers: {
@@ -93,12 +100,12 @@ const ProfilePage = () => {
         },
         body: formData,
       });
-  
+
       if (!response.ok) {
         throw new Error('Failed to update profileData data');
       }
 
-       await fetchData()
+      await fetchData()
       setIsEditing(false);
       setImage(null)
       setFName('')
@@ -106,13 +113,13 @@ const ProfilePage = () => {
       setPreviewImage(null)
       setImage(null)
       setEmail('')
-    
+
     } catch (error) {
       console.error(error);
     }
   };
-  
-  
+
+
 
 
   return (
@@ -120,7 +127,7 @@ const ProfilePage = () => {
       <div className="bg-white shadow-md rounded-lg p-6">
         <div className="flex items-center mb-6">
           <img
-            src={ preview || profileData.image }
+            src={preview || profileData.image}
             alt="Profile"
             className="w-24 h-24 rounded-full object-cover mr-6"
           />
@@ -181,11 +188,11 @@ const ProfilePage = () => {
           </div>
           <div className="mb-4">
             <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
-              Password
+             Old  Password
             </label>
             <div className="relative">
               <input
-                type="password"
+                 type={showPassword ? 'text' : 'password'}
                 id="password"
                 name="password"
                 value={profileData.password}
@@ -193,9 +200,45 @@ const ProfilePage = () => {
                 disabled={!isEditing}
                 className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
-              <Lock className="absolute left-3 top-2.5 text-gray-400" size={20} />
+
+{showPassword ? (
+              <Lock className="absolute left-3 top-2.5 text-gray-400" size={20} 
+              onClick={togglePasswordVisibility}  />
+             ) : (
+              <LockOpen className="absolute left-3 top-2.5 text-gray-400" size={20} 
+              onClick={togglePasswordVisibility}  />
+             )}
+              
             </div>
           </div>
+          {isEditing &&(
+             <div className="mb-4">
+             <label htmlFor="Npassword" className="block text-sm font-medium text-gray-700 mb-1">
+              New  Password
+             </label>
+             <div className="relative">
+               <input
+                  type={showPassword ? 'text' : 'password'}
+                 id="Npassword"
+                 name="password"
+                 value={newPassword}
+                 onChange={(e) => setNewPassword(e.target.value)}
+                 disabled={!isEditing}
+                 className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+               />
+ 
+ {showPassword ? (
+               <Lock className="absolute left-3 top-2.5 text-gray-400" size={20} 
+               onClick={togglePasswordVisibility}  />
+              ) : (
+               <LockOpen className="absolute left-3 top-2.5 text-gray-400" size={20} 
+               onClick={togglePasswordVisibility}  />
+              )}
+               
+             </div>
+           </div>
+          )}
+         
           {isEditing && (
             <div className="mb-4">
               <label htmlFor="image" className="block text-sm font-medium text-gray-700 mb-1">
