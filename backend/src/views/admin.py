@@ -159,7 +159,7 @@ def check_task_status(task_id):
 
 
 @admin.route("/posts/delete/<string:slug>", methods=["DELETE"])
-def delete_post(slug):
+def delete_a_post(slug):
     """An endpoint to delete a post based on the category"""
     if delete_post(slug):
         return " ", 204
