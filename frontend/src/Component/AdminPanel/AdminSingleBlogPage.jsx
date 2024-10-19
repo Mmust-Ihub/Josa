@@ -55,6 +55,13 @@ const SingleBlogPage = () => {
 
   }, [apiBaseUrl, slug, category]);
 
+  useEffect(() => {
+    if (blog) {
+      setNewTitle(blog.title);
+     
+    }
+  }, [blog]);
+
 
 
 
@@ -155,7 +162,7 @@ const SingleBlogPage = () => {
           {isEditing ? (
             <input
               type="text"
-              value={blog.title}
+              value={newTitle}
               onChange={(e) => setNewTitle(e.target.value)}
               className="text-3xl font-bold mb-4 w-full border-b-2 border-gray-300 focus:outline-none focus:border-blue-500"
             />
