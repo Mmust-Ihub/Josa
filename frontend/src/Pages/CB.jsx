@@ -26,7 +26,7 @@ const CreateBlogPage = () => {
   const handleSubmit = async (event) => {
 
     toast.loading("posting your blog...");
-    const notification = toast.loading("posting your blog...");
+   
     event.preventDefault();
 
     const formData = new FormData();
@@ -54,8 +54,9 @@ const CreateBlogPage = () => {
 
       console.log(response)
       if (response?.ok) {
-        // toast.remove()
+        toast.dismiss();
         toast.success("Blog post created successfully");
+
         setTitle("");
         setHeadline("");
         setContent("");
@@ -64,7 +65,7 @@ const CreateBlogPage = () => {
         setPreviewImage(null);
 
       } else {
-        toast.remove()
+        toast.dismiss();
 
         toast.error("Failed to create blog post");
         console.error("Failed to create blog post");
@@ -75,9 +76,7 @@ const CreateBlogPage = () => {
       // }
       toast.remove()
 
-      toast.error("An error occurred", {
-        id: notification,
-      });
+      toast.error("An error occurred");
       console.error("An error occurred:", error);
     }
   };

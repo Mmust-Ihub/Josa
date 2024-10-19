@@ -14,6 +14,7 @@ import NotFound from './Component/NotFound';
 // Import your components as needed
 import Homepage from "./Pages/Homepage";
 import LoginForm from "./Pages/Login";
+import SignUpForm from "./Pages/Signup";
 import Admin from "./Pages/Admin";
 import CB from "./Pages/CB";
 import PreviewBlog from "./Pages/PreviewBlog";
@@ -48,6 +49,7 @@ class App extends React.Component {
               <Route path="/" element={<Homepage />} />
               <Route path="/admin" element={<Admin />} />
               <Route path="/login" element={<LoginForm />} />
+              <Route path="/josa/register" element={<SignUpForm />} />
               <Route path="/Admin/PreviewBlog" element={<PreviewBlog />} />
               <Route path="/Admin/profile" element={<ProfilePage />} />
               <Route path="/Admin/CreateBlog" element={<CB />} />

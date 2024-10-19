@@ -3,6 +3,7 @@ import { TiThMenu } from 'react-icons/ti';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 
+
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
@@ -11,6 +12,7 @@ const Navbar = () => {
   };
 
   return (
+    <>
     <motion.div
       initial={{ y: -100, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
@@ -38,22 +40,23 @@ const Navbar = () => {
           } md:flex flex-row w-full h-full gap-10`}
         >
           <li className="active:text-purple-600 hover:text-purple-600">
-            <Link to="/">Home</Link>
+            <Link onClick={toggleMenu} to="/">Home</Link>
           </li>
           <li className="active:text-purple-600 hover:text-purple-600">
-            <Link to="/news">News</Link>
+            <Link onClick={toggleMenu} to="/news">News</Link>
           </li>
           
           <li className="active:text-purple-600 hover:text-purple-600">
-            <Link to="/business">Business</Link>
+            <Link onClick={toggleMenu} to="/business">Business</Link>
           </li>
           <li className="active:text-purple-600 hover:text-purple-600">
-            <Link to="/sports">Sports</Link>
+            <Link onClick={toggleMenu} to="/sports">Sports</Link>
           </li>
           <li className="active:text-purple-600 hover:text-purple-600">
-            <Link to="/entertainment">Entertainment</Link>
+            <Link onClick={toggleMenu} to="/entertainment">Entertainment</Link>
 
           </li>
+        
         </ul>
         <div
           className={`min-[768px]:hidden cursor-pointer z-50`}
@@ -62,7 +65,15 @@ const Navbar = () => {
           <TiThMenu />
         </div>
       </div>
+
+     
+
+
     </motion.div>
+
+   
+
+    </>
   );
 };
 

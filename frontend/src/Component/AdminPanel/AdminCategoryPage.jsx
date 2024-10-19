@@ -141,7 +141,7 @@ const BlogCard = ({ blog, category }) => {
         try {
           await fetch(`${apiBaseUrl}/api/v1/admin/posts/delete/${blog.slug}`,
             {          
-            
+              method:'DELETE',
               headers: {
                 Authorization: `Bearer ` + localStorage.getItem("accessToken"),
               }

@@ -1,7 +1,6 @@
 
 import { useState, useEffect, useCallback } from 'react';
-import { Icon } from '@iconify/react';
-import { User, Mail, Lock , LockOpen} from 'lucide-react';
+import { User, Mail, Lock, LockOpen } from 'lucide-react';
 
 
 const ProfilePage = () => {
@@ -12,7 +11,7 @@ const ProfilePage = () => {
   const [password, setPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [email, setEmail] = useState('');
-  const [showPassword, setShowPassword] = useState(false); 
+  const [showPassword, setShowPassword] = useState(false);
 
   const [isEditing, setIsEditing] = useState(false);
 
@@ -53,6 +52,8 @@ const ProfilePage = () => {
 
       setProfileData(responseData);
 
+      
+
       return responseData;
 
     } catch (error) {
@@ -76,10 +77,19 @@ const ProfilePage = () => {
   };
 
 
+  useEffect(() => {
+    if (profileData) {
+      setFName(profileData.first_name);
+      setLName(profileData.last_name);
+      setEmail(profileData.email);
+    }
+  }, [profileData]);
 
   const handleSaveClick = async (event) => {
     event.preventDefault();
     setIsEditing(false);
+
+    console.log(fName)
 
 
     try {
@@ -93,13 +103,20 @@ const ProfilePage = () => {
       formData.append("new_password", newPassword);
 
 
+
+    
+
+
       const response = await fetch(`${apiBaseUrl}/api/v1/admin/update/profile`, {
         method: 'PUT',
         headers: {
+          'content-type': 'multipart/form-data',
           'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
         },
         body: formData,
       });
+
+      console.log(response)
 
       if (!response.ok) {
         throw new Error('Failed to update profileData data');
@@ -147,12 +164,13 @@ const ProfilePage = () => {
               <input
                 type="text"
                 id="firstName"
-                name="firstName"
-                value={profileData.first_name}
+                value={isEditing ? fName : profileData.first_name}
                 onChange={(e) => setFName(e.target.value)}
                 disabled={!isEditing}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
+              <User className="absolute left-3 top-2.5 text-gray-400" size={20} />
+
             </div>
             <div>
               <label htmlFor="lastName" className="block text-sm font-medium text-gray-700 mb-1">
@@ -162,11 +180,11 @@ const ProfilePage = () => {
                 type="text"
                 id="lastName"
                 name="lastName"
-                value={profileData.last_name}
-                onChange={(e) => setLName(e.target.value)}
+                value={isEditing ? lName : profileData.last_name} onChange={(e) => setLName(e.target.value)}
                 disabled={!isEditing}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
+              <User className="absolute left-3 top-2.5 text-gray-400" size={20} />
             </div>
           </div>
           <div className="mb-4">
@@ -178,8 +196,7 @@ const ProfilePage = () => {
                 type="email"
                 id="email"
                 name="email"
-                value={profileData.email}
-                onChange={(e) => setEmail(e.target.value)}
+                value={isEditing ? email : profileData.email} onChange={(e) => setEmail(e.target.value)}
                 disabled={!isEditing}
                 className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
@@ -188,57 +205,57 @@ const ProfilePage = () => {
           </div>
           <div className="mb-4">
             <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
-             Old  Password
+              Old  Password
             </label>
             <div className="relative">
               <input
-                 type={showPassword ? 'text' : 'password'}
+                type={showPassword ? 'text' : 'password'}
                 id="password"
                 name="password"
-                value={profileData.password}
+                value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 disabled={!isEditing}
                 className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
 
-{showPassword ? (
-              <Lock className="absolute left-3 top-2.5 text-gray-400" size={20} 
-              onClick={togglePasswordVisibility}  />
-             ) : (
-              <LockOpen className="absolute left-3 top-2.5 text-gray-400" size={20} 
-              onClick={togglePasswordVisibility}  />
-             )}
-              
+              {showPassword ? (
+                <Lock className="absolute left-3 top-2.5 text-gray-400" size={20}
+                  onClick={togglePasswordVisibility} />
+              ) : (
+                <LockOpen className="absolute left-3 top-2.5 text-gray-400" size={20}
+                  onClick={togglePasswordVisibility} />
+              )}
+
             </div>
           </div>
-          {isEditing &&(
-             <div className="mb-4">
-             <label htmlFor="Npassword" className="block text-sm font-medium text-gray-700 mb-1">
-              New  Password
-             </label>
-             <div className="relative">
-               <input
+          {isEditing && (
+            <div className="mb-4">
+              <label htmlFor="Npassword" className="block text-sm font-medium text-gray-700 mb-1">
+                New  Password
+              </label>
+              <div className="relative">
+                <input
                   type={showPassword ? 'text' : 'password'}
-                 id="Npassword"
-                 name="password"
-                 value={newPassword}
-                 onChange={(e) => setNewPassword(e.target.value)}
-                 disabled={!isEditing}
-                 className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-               />
- 
- {showPassword ? (
-               <Lock className="absolute left-3 top-2.5 text-gray-400" size={20} 
-               onClick={togglePasswordVisibility}  />
-              ) : (
-               <LockOpen className="absolute left-3 top-2.5 text-gray-400" size={20} 
-               onClick={togglePasswordVisibility}  />
-              )}
-               
-             </div>
-           </div>
+                  id="Npassword"
+                  name="password"
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
+                  disabled={!isEditing}
+                  className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+
+                {showPassword ? (
+                  <Lock className="absolute left-3 top-2.5 text-gray-400" size={20}
+                    onClick={togglePasswordVisibility} />
+                ) : (
+                  <LockOpen className="absolute left-3 top-2.5 text-gray-400" size={20}
+                    onClick={togglePasswordVisibility} />
+                )}
+
+              </div>
+            </div>
           )}
-         
+
           {isEditing && (
             <div className="mb-4">
               <label htmlFor="image" className="block text-sm font-medium text-gray-700 mb-1">
