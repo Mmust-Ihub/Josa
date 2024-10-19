@@ -7,7 +7,7 @@ from flask_jwt_extended import get_jwt_identity, jwt_required
 from src.utils.password import verify_password
 from src.utils.upload import compress_image, upload_image_to_cloud
 from src.models.database import db, User, Post, Comment
-from src.celery.task import get_status, upload_image
+from src.celery.task import get_status, upload_image, upload_post
 from werkzeug.utils import secure_filename
 
 admin = Blueprint(
@@ -141,8 +141,10 @@ def create_new_post():
             filepath = os.path.join(UPLOAD_DIR, filename)
             file.save(filepath)
             data["user_id"] = user_id
-            task = upload_image.apply_async(args=[data, filepath])
-            return jsonify({"status": "success", "task_id": task.id}), 202
+            # task = upload_image.apply_async(args=[data, filepath])
+            # return jsonify({"status": "success", "task_id": task.id}), 202
+            upload_post(data, filepath)
+            return jsonify({"status": "success", "message": "post uploaded successfully"}), 202
         else:
             return make_response("failed", message, 400)
     except Exception as e:

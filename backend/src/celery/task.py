@@ -15,6 +15,14 @@ def upload_image(self, data, filepath):
     os.remove(filepath)
     return {"remaining": 0,"completed": 1, "result": "All tasks completed",}
 
+# upload image without workers
+def upload_post(data, filepath):
+    compress_image(filepath)
+    response = upload_image_to_cloud(filepath)
+    resp = {**data, "image": response}
+    new_post = Post(**resp)
+    new_post.__post_init__()
+    os.remove(filepath)
 
 # check the status of a task (reusable view function)
 def get_status(task_id):
