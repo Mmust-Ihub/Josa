@@ -10,6 +10,9 @@ const Navbar = () => {
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
+  const falsify = () => {
+    setIsMenuOpen(false);
+  };
 
   return (
     <>
@@ -40,20 +43,20 @@ const Navbar = () => {
           } md:flex flex-row w-full h-full gap-10`}
         >
           <li className="active:text-purple-600 hover:text-purple-600">
-            <Link onClick={toggleMenu} to="/">Home</Link>
+            <Link onClick={falsify} to="/">Home</Link>
           </li>
           <li className="active:text-purple-600 hover:text-purple-600">
-            <Link onClick={toggleMenu} to="/news">News</Link>
+            <Link onClick={falsify} to="/news">News</Link>
           </li>
           
           <li className="active:text-purple-600 hover:text-purple-600">
-            <Link onClick={toggleMenu} to="/business">Business</Link>
+            <Link onClick={falsify} to="/business">Business</Link>
           </li>
           <li className="active:text-purple-600 hover:text-purple-600">
-            <Link onClick={toggleMenu} to="/sports">Sports</Link>
+            <Link onClick={falsify} to="/sports">Sports</Link>
           </li>
           <li className="active:text-purple-600 hover:text-purple-600">
-            <Link onClick={toggleMenu} to="/entertainment">Entertainment</Link>
+            <Link onClick={falsify} to="/entertainment">Entertainment</Link>
 
           </li>
         
