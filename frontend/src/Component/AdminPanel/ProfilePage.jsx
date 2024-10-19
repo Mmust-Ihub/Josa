@@ -1,232 +1,288 @@
 
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Icon } from '@iconify/react';
+import { User, Mail, Lock , LockOpen} from 'lucide-react';
+
 
 const ProfilePage = () => {
-  const [img, setImg] = useState();
+  const [image, setImage] = useState(null);
+  const [preview, setPreviewImage] = useState(null);
+  const [fName, setFName] = useState('');
+  const [lName, setLName] = useState('');
+  const [password, setPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [email, setEmail] = useState('');
+  const [showPassword, setShowPassword] = useState(false); 
 
   const [isEditing, setIsEditing] = useState(false);
-  
+
+
+
   const [profileData, setProfileData] = useState({
     contact: '',
     image: '',
     first_name: '',
     last_name: '',
   });
-
-  const [selectedImage, setSelectedImage] = useState(null);
-  const [imagePreview, setImagePreview] = useState(null);
-
-  useEffect(() => {
-    if (selectedImage) {
-      const base64Image = selectedImage.split(',')[1];
-      setProfileData(prevData => ({ ...prevData, image_id: base64Image }));
-    }
-  }, [selectedImage]);
-  
+  const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
 
 
-    const fetchData = async () => {
-      try {
-        const response = await fetch(' https://mmust-jowa.onrender.com/api/v1/admin/get/profile', {
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
-          },
-        });
 
-        if (!response.ok) {
-          throw new Error('Failed to fetch profile data');
-        }
-         // Assuming the server returns the URL of the uploaded image
-         const responseData = await response.json();
-         
-         
-         // Assuming the server returns the URL of the uploaded image
-         const imageUrl = responseData.image_path;
-         
-         setImg(imageUrl);
-     
-         // Set initial profile data
-         setProfileData(responseData);
-     
-         return responseData;
-       
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
-    useEffect(() => {
-    fetchData().then((data) => {
-      setProfileData(data); // Set initial profile data
-    });
-  }, []);
-
-  const handleEditClick = () => {
-    setIsEditing(true);
+  const togglePasswordVisibility = () => {
+    setShowPassword((prevShowPassword) => !prevShowPassword);
   };
-  const handleImageChange = (event) => {
-    const file = event.target.files[0];
-  
-    if (file) {
-      const reader = new FileReader();
-  
-      reader.onloadend = () => {
-        setSelectedImage(reader.result);
-        setImagePreview(reader.result);
-      };
-  
-      reader.readAsDataURL(file);
-    }
-  };
-  
 
-  
 
-  const handleSaveClick = async () => {
+
+
+
+  const fetchData = useCallback(async () => {
     try {
-     
-  
-      const requestBody = {
-        contact: profileData.contact,
-        first_name: profileData.first_name,
-        last_name: profileData.last_name,
-        image: selectedImage, // You might need to adjust this depending on how the server expects the image data
-      };
-  
-      const response = await fetch('https://mmust-jowa.onrender.com/api/v1/admin/update/profile', {
-        method: 'PUT',
+      const response = await fetch(`${apiBaseUrl}/api/v1/admin/get/profile`, {
         headers: {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
         },
-        body: JSON.stringify(requestBody),
       });
-  
+
       if (!response.ok) {
-        throw new Error('Failed to update profile data');
+        throw new Error('Failed to fetch profileData data');
       }
-  
-      const updatedData = await fetchData();
-      
-      localStorage.setItem("User",profileData.first_name);
-      setProfileData(updatedData);
+
+      const responseData = await response.json();
+
+      setProfileData(responseData);
+
+      return responseData;
+
+    } catch (error) {
+      console.error(error);
+    }
+  }, [apiBaseUrl])
+
+  useEffect(() => {
+    fetchData()
+
+  }, [fetchData])
+
+
+
+  const handleImageChange = (e) => {
+    if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0];
+      setImage(file);
+      setPreviewImage(URL.createObjectURL(file));
+    }
+  };
+
+
+
+  const handleSaveClick = async (event) => {
+    event.preventDefault();
+    setIsEditing(false);
+
+
+    try {
+
+      const formData = new FormData();
+      formData.append("first_name", fName);
+      formData.append("last_name", lName);
+      formData.append("email", email);
+      formData.append("image", image);
+      formData.append("old_password", password);
+      formData.append("new_password", newPassword);
+
+
+      const response = await fetch(`${apiBaseUrl}/api/v1/admin/update/profile`, {
+        method: 'PUT',
+        headers: {
+          'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
+        },
+        body: formData,
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to update profileData data');
+      }
+
+      await fetchData()
       setIsEditing(false);
-      setImagePreview(null);
-    
+      setImage(null)
+      setFName('')
+      setLName('')
+      setPreviewImage(null)
+      setImage(null)
+      setEmail('')
+
     } catch (error) {
       console.error(error);
     }
   };
-  
-  
+
+
 
 
   return (
-    <div className='   min-[640px]:ml-0 '>
-
-
-      <div className='px-4 mx-auto sm:max-w-xl md:max-w-full lg:w-fit md:px-24  absolute mt-5 lg:py-16 w-full py-4    rounded shadow-xl '>
-        <div>
-          <h3 className='text-xl font-bold text-gray-500 border-b pb-4 mt-0'>Account Information</h3>
-          <div className='mt-4 py-3  '>
-            <p className='text-gray-400'>Profile picture change</p>
-            <div className='flex items-center gap-4'>
-              <img className="w-20 z-0 h-20 rounded-full p-1 object-cover " src={imagePreview || profileData.image_id || `/src/images/profile.png`} alt="" width="384" height="512" />
-              <div className='gap-6 flex text-sm'>
-                <label className="bg-slate-200 w-fit px-4 py-1.5 rounded-sm cursor-pointer z-0 ">
-                  <p>Edit</p>
-                  <input
-                    type="file"
-                    accept="image/*"
-                    onChange={handleImageChange}
-                    style={{ display: 'none' }}
-                  />
-                </label>
-
-              </div>
-            </div>
+    <div className="max-w-2xl mx-auto">
+      <div className="bg-white shadow-md rounded-lg p-6">
+        <div className="flex items-center mb-6">
+          <img
+            src={preview || profileData.image}
+            alt="Profile"
+            className="w-24 h-24 rounded-full object-cover mr-6"
+          />
+          <div>
+            <h2 className="text-2xl font-semibold">
+              {profileData.first_name} {profileData.last_name}
+            </h2>
+            <p className="text-gray-600">{profileData.email}</p>
           </div>
         </div>
-        {/* // personal information */}
-        <div className='flex w-full justify-between px-2 items-center border-b'>
-          <h3 className='text-xl font-bold text-gray-500  pb-4 mt-0'>Personal Information</h3>
-          <Icon icon="circum:edit" width="30" height="30" color='gray-700' className=' cursor-pointer' onClick={handleEditClick} />        </div>
-
-        <div className='text-xl gap-4 grid mt-5 min-[400px]:grid-cols-2 grid-cols-1 '>
-
-          <div className=''>
-            <label htmlFor="Fname" className="block text-sm font-medium leading-6 text-gray-900">
-              First Name
+        <form onSubmit={handleSaveClick}>
+          <div className="grid grid-cols-2 gap-4 mb-4">
+            <div>
+              <label htmlFor="firstName" className="block text-sm font-medium text-gray-700 mb-1">
+                First Name
+              </label>
+              <input
+                type="text"
+                id="firstName"
+                name="firstName"
+                value={profileData.first_name}
+                onChange={(e) => setFName(e.target.value)}
+                disabled={!isEditing}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
+            <div>
+              <label htmlFor="lastName" className="block text-sm font-medium text-gray-700 mb-1">
+                Last Name
+              </label>
+              <input
+                type="text"
+                id="lastName"
+                name="lastName"
+                value={profileData.last_name}
+                onChange={(e) => setLName(e.target.value)}
+                disabled={!isEditing}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
+          </div>
+          <div className="mb-4">
+            <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+              Email
             </label>
-            <div className="relative mt-2 rounded-md shadow-sm">
-              <div className="pointer-events-none absolut inset-y-0 left-0 flex items-start ">
-              </div>
+            <div className="relative">
               <input
-                type="text"
-                name="Name"
-                id="Fname"
-                onChange={(e) => setProfileData({ ...profileData, first_name: e.target.value })}
-                className={` w-fit rounded-md border-0 py-1.5 pl-2  text-sm  text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 sm:text-sm sm:leading-2 ${isEditing ? '' : 'cursor-not-allowed'}`}
-                placeholder={profileData.first_name}
-                disabled={isEditing ? false : true}
+                type="email"
+                id="email"
+                name="email"
+                value={profileData.email}
+                onChange={(e) => setEmail(e.target.value)}
+                disabled={!isEditing}
+                className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
-
+              <Mail className="absolute left-3 top-2.5 text-gray-400" size={20} />
             </div>
           </div>
-
-          <div className=''>
-            <label htmlFor="Lname" className="block text-sm font-medium leading-6 text-gray-900">
-              Last Name
+          <div className="mb-4">
+            <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
+             Old  Password
             </label>
-            <div className="relative mt-2 rounded-md shadow-sm">
-              <div className="pointer-events-none absolute inset-y-0 left-0 flex items-start ">
-              </div>
+            <div className="relative">
               <input
-                type="text"
-                name="Name"
-                id="Lname"
-                onChange={(e) => setProfileData({ ...profileData, last_name: e.target.value })}
-                className={` w-fit rounded-md border-0 py-1.5 pl-2 text-sm  text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 sm:text-sm sm:leading-2 ${isEditing ? '' : 'cursor-not-allowed'}`}
-                placeholder={profileData.last_name}
-                disabled={isEditing ? false : true}
+                 type={showPassword ? 'text' : 'password'}
+                id="password"
+                name="password"
+                value={profileData.password}
+                onChange={(e) => setPassword(e.target.value)}
+                disabled={!isEditing}
+                className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
 
+{showPassword ? (
+              <Lock className="absolute left-3 top-2.5 text-gray-400" size={20} 
+              onClick={togglePasswordVisibility}  />
+             ) : (
+              <LockOpen className="absolute left-3 top-2.5 text-gray-400" size={20} 
+              onClick={togglePasswordVisibility}  />
+             )}
+              
             </div>
           </div>
-          <div className=' '>
-
-            <label htmlFor="Contact" className=" mx-0  text-sm font-medium leading-6 text-gray-900">
-              Contact      </label>
-            <div className="relative mt-2 rounded-md shadow-sm">
-              <div className="pointer-events-none absolute inset-y-0 left-0 flex items-start ">
-              </div>
+          {isEditing &&(
+             <div className="mb-4">
+             <label htmlFor="Npassword" className="block text-sm font-medium text-gray-700 mb-1">
+              New  Password
+             </label>
+             <div className="relative">
+               <input
+                  type={showPassword ? 'text' : 'password'}
+                 id="Npassword"
+                 name="password"
+                 value={newPassword}
+                 onChange={(e) => setNewPassword(e.target.value)}
+                 disabled={!isEditing}
+                 className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+               />
+ 
+ {showPassword ? (
+               <Lock className="absolute left-3 top-2.5 text-gray-400" size={20} 
+               onClick={togglePasswordVisibility}  />
+              ) : (
+               <LockOpen className="absolute left-3 top-2.5 text-gray-400" size={20} 
+               onClick={togglePasswordVisibility}  />
+              )}
+               
+             </div>
+           </div>
+          )}
+         
+          {isEditing && (
+            <div className="mb-4">
+              <label htmlFor="image" className="block text-sm font-medium text-gray-700 mb-1">
+                Profile Image
+              </label>
               <input
-                type="text"
-                name="Name"
-                id="Contact"
-                onChange={(e) => setProfileData({ ...profileData, contact: e.target.value })}
-                placeholder={profileData.contact}
-                disabled={isEditing ? false : true}
-                className={` w-fit rounded-md border-0 py-1.5 pl-2 text-sm  text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 sm:text-sm sm:leading-2 ${isEditing ? '' : 'cursor-not-allowed'}`}
+                type="file"
+                id="image"
+                accept="image/*"
+                onChange={handleImageChange}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
-
             </div>
+          )}
+          <div className="flex justify-end">
+            {isEditing ? (
+              <>
+                <button
+                  type="button"
+                  onClick={() => setIsEditing(false)}
+                  className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600 mr-2"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleSaveClick}
+                  type="submit"
+                  className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+                >
+                  Save Changes
+                </button>
+              </>
+            ) : (
+              <button
+                type="button"
+                onClick={() => setIsEditing(true)}
+                className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+              >
+                Edit Profile
+              </button>
+            )}
           </div>
-          <div className='flex gap-2 text-sm h-full items-end'>
-            <button className='bg-slate-200 h-8 w-fit px-4 rounded-sm  '>
-              Discard
-            </button>
-
-            <button className='bg-slate-200 h-8 w-fit px-4  rounded-sm' onClick={handleSaveClick}>
-              Save 
-            </button>
-
-          </div>
-        </div>
+        </form>
       </div>
-
     </div>
   );
 };
