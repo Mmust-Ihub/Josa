@@ -15,6 +15,7 @@ auth = Blueprint(
 def register_user():
     try:
         register_data = request.get_json()
+        print(register_data)
         if not verify_user_registration_details(register_data):
             return make_response("failed", error, 400)
 
