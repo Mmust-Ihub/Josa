@@ -32,25 +32,18 @@ function SignUpForm() {
             formData
           ),
         });
-      
+      const data = await response.json()
 
       if (response.ok ) {
         toast.success("Registration successful", {
           id: notification,
         });
-
-        const resp = await response.json();
-        const { access_token,user } = resp.data;
-
-        localStorage.setItem("accessToken", access_token);
-        localStorage.setItem("User", JSON.stringify(user));
-
-        window.location.href = "/Admin";  
+        window.location.href = "/login";
       } else {
-        toast.error("Registration failed", { id: notification });
+        toast.error(`${data.message}`, { id: notification });
       }
     } catch (error) {
-      toast.error("An internal error occurred", { id: notification });
+      toast.error(`${data.message}`, { id: notification });
 
     }
   };
