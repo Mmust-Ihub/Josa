@@ -1,5 +1,5 @@
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import { User, Mail, Lock, LockOpen } from 'lucide-react';
 
 
@@ -8,7 +8,7 @@ const ProfilePage = () => {
   const [preview, setPreviewImage] = useState(null);
   const [fName, setFName] = useState('');
   const [lName, setLName] = useState('');
-  const [password, setPassword] = useState('');
+  const [pass, setPassword] = useState('')
   const [newPassword, setNewPassword] = useState('');
   const [email, setEmail] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -34,36 +34,34 @@ const ProfilePage = () => {
 
 
 
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch(`${apiBaseUrl}/api/v1/admin/get/profile`, {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
+          },
+        });
 
-  const fetchData = useCallback(async () => {
-    try {
-      const response = await fetch(`${apiBaseUrl}/api/v1/admin/get/profile`, {
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
-        },
-      });
+        if (!response.ok) {
+          throw new Error('Failed to fetch profile data');
+        }
 
-      if (!response.ok) {
-        throw new Error('Failed to fetch profileData data');
+        const responseData = await response.json();
+        setProfileData(responseData);
+
+        // Update state only after the data is fetched
+        setFName(responseData.first_name);
+        setLName(responseData.last_name);
+        setEmail(responseData.email);
+      } catch (error) {
+        console.error(error);
       }
+    };
 
-      const responseData = await response.json();
-
-      setProfileData(responseData);
-
-      
-
-      return responseData;
-
-    } catch (error) {
-      console.error(error);
-    }
-  }, [apiBaseUrl])
-
-
-
-
+    fetchData();
+  }, [apiBaseUrl]);
 
   const handleImageChange = (e) => {
     if (e.target.files && e.target.files[0]) {
@@ -73,36 +71,18 @@ const ProfilePage = () => {
     }
   };
 
-
-  useEffect(() => {
-    if (profileData) {
-      setFName(profileData.first_name);
-      setLName(profileData.last_name);
-      setEmail(profileData.email);
-    }
-  }, [profileData]);
-
   const handleSaveClick = async (event) => {
     event.preventDefault();
     setIsEditing(false);
 
-    console.log(fName)
-
-
     try {
-
       const formData = new FormData();
       formData.append("first_name", fName);
       formData.append("last_name", lName);
       formData.append("email", email);
       formData.append("image", image);
-      formData.append("old_password", password);
+      formData.append("old_password", pass);
       formData.append("new_password", newPassword);
-
-
-
-    
-
 
       const response = await fetch(`${apiBaseUrl}/api/v1/admin/update/profile`, {
         method: 'PUT',
@@ -113,21 +93,17 @@ const ProfilePage = () => {
         body: formData,
       });
 
-      console.log(response)
-
       if (!response.ok) {
-        throw new Error('Failed to update profileData data');
+        throw new Error('Failed to update profile');
       }
+      
 
-      await fetchData()
-      setIsEditing(false);
-      setImage(null)
-      setFName('')
-      setLName('')
-      setPreviewImage(null)
-      setImage(null)
-      setEmail('')
 
+      setImage(null);
+      setPassword('');
+      setNewPassword('');
+      setPreviewImage(null);
+      
     } catch (error) {
       console.error(error);
     }
@@ -209,7 +185,8 @@ const ProfilePage = () => {
                 type={showPassword ? 'text' : 'password'}
                 id="password"
                 name="password"
-                value={password}
+                value={pass}
+                autoComplete='false'
                 onChange={(e) => setPassword(e.target.value)}
                 disabled={!isEditing}
                 className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
