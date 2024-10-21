@@ -31,14 +31,10 @@ function LoginForm() {
 
         // Login was successful
         const resp = await response.json();
-
-        const access_token = await resp.data.access_token;
-        const user = resp.data.user;
+        const { access_token, user } = resp.data;
 
         localStorage.setItem("accessToken", access_token);
-        localStorage.setItem("User", user);
-        localStorage.setItem("accessToken", access_token);
-        localStorage.setItem("User", user);
+        localStorage.setItem("User", JSON.stringify(user));
 
         
         window.location.href = "/Admin";
