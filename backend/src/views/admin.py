@@ -78,11 +78,11 @@ def get_latest_five_news_posts():
 def update_post_in_latest_news(slug):
     """An endpoint to update the posts based on the category dashboard"""
     success_msg = "post updated successfully"
-    error_msg = "invalid id passed"
-    data = request.get_json()
+    error_msg = "invalid slug passed"
+    data = request.form.to_dict(flat=True)
     response = update_post(slug, data)
     if response:
-        jsonify({"success": success_msg}), 202
+        return jsonify({"success": success_msg}), 202
     else:
         return jsonify({"error": error_msg}), 404
 
@@ -167,7 +167,7 @@ def delete_a_post(slug):
     if delete_post(slug):
         return " ", 204
 
-    return jsonify({"failed": "double check the image"}), 404
+    return jsonify({"failed": "double check the slug and try again"}), 404
 
 
 # Admin profile
@@ -204,13 +204,14 @@ def update_admin_profile():
             return jsonify({"error": "invalid password. Try again"}), 401
         admin.password = data["new_password"]
     if file:
-        file_extension = os.path.splitext(file.filename)[1].lower()
-        filename = secure_filename(os.path.join(str(uuid.uuid1()), file_extension))
-        filepath = os.path.join(UPLOAD_DIR, filename)
-        file.save(filepath)
-        compress_image(filepath)
-        image_url = upload_image_to_cloud(filepath)
-        os.remove(filepath)
+        # file_extension = os.path.splitext(file.filename)[1].lower()
+        # filename = secure_filename(os.path.join(str(uuid.uuid1()), file_extension))
+        # filepath = os.path.join(UPLOAD_DIR, filename)
+        # file.save(filepath)
+        # compress_image(filepath)
+        # image_url = upload_image_to_cloud(filepath)
+        # os.remove(filepath)
+        image_url = upload_image_to_cloud(file)
         admin.image = image_url
 
     if "first_name" in data:
@@ -284,14 +285,14 @@ def delete_post(slug) -> bool:
 
 def update_post(slug, data) -> bool:
     """A function to update  a post"""
-    data = Post.query.filter_by(slug=slug).first()
-    if data:
-        data.title = data.get("title")
-        data.slug = data.title.lower().replace(" ", "-")
-        data.headline = data.get("headline")
-        data.content = data.get("body")
-        data.image = data.image
-        data.update()
+    post = Post.query.filter_by(slug=slug).first()
+    if post:
+        print(data)
+        post.title = data.get("title")
+        post.slug = post.title.lower().replace(" ", "-")
+        post.headline = data.get("headline")
+        post.content = data.get("content")
+        post.update()
         return True
 
     return False

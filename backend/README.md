@@ -371,7 +371,20 @@ user should double check the registration credentials.
   ```
 
 ## Update posts
- > working on it ....
+> **Data should be sent as form data**
+- url: PUT [{{dev_base_url}}/api/v1/admin/posts/update/{slug}]()
+- ```python
+  headers:
+    content-type: multipart/form-data
+    Authorization: Bearer <token>
+  ```
+- ```json
+     {
+      "title": "The updated title",
+      "headline": "The updated headline",
+      "content": "The updated content",
+     }
+  ```
 
 ## Delete posts
 
