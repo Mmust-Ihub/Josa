@@ -61,10 +61,7 @@ const ProfilePage = () => {
     }
   }, [apiBaseUrl])
 
-  useEffect(() => {
-    fetchData()
 
-  }, [fetchData])
 
 
 
