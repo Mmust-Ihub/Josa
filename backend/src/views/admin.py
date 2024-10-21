@@ -136,14 +136,15 @@ def create_new_post():
         file = request.files.get("image")
         status, message = validate_post_data(data)
         if status and file:
-            file_extension = os.path.splitext(file.filename)[1].lower()
-            filename = secure_filename(os.path.join(str(uuid.uuid1()), file_extension))
-            filepath = os.path.join(UPLOAD_DIR, filename)
-            file.save(filepath)
-            data["user_id"] = user_id
+            # file_extension = os.path.splitext(file.filename)[1].lower()
+            # filename = secure_filename(os.path.join(str(uuid.uuid1()), file_extension))
+            # filepath = os.path.join(UPLOAD_DIR, filename)
+            # file.save(filepath)
+            # data["user_id"] = user_id
             # task = upload_image.apply_async(args=[data, filepath])
             # return jsonify({"status": "success", "task_id": task.id}), 202
-            upload_post(data, filepath)
+            data["user_id"] = user_id
+            upload_post(data, file)
             return jsonify({"status": "success", "message": "post uploaded successfully"}), 202
         else:
             return make_response("failed", message, 400)
