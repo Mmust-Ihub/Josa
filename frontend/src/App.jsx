@@ -18,7 +18,6 @@ import SignUpForm from "./Pages/Signup";
 import Admin from "./Pages/Admin";
 import CB from "./Pages/CB";
 import PreviewBlog from "./Pages/PreviewBlog";
-import EditBlog from "./Pages/EditBlog";
 import CategoryPage from "./Pages/CategoryPage";
 import SingleBlogPage from "./Pages/SingleBlogPage";
 
@@ -58,7 +57,7 @@ class App extends React.Component {
               <Route path="/:category/:slug" element={<SingleBlogPage />} />
               <Route path="/Admin/:category/:slug" element={<AdminSingleBlogPage />} />
               <Route path="/CB" element={<CB />} />
-              <Route path="/EditBlog" element={<EditBlog />} />
+          
               <Route path="*" element={<NotFound />} />
             </Routes>
           </Layout>

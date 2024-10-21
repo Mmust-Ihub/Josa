@@ -1,24 +1,12 @@
 import React, { useState, useEffect } from "react";
-import AdminNavbar from "../Component/AdminPanel/AdminNavbar";
-import AdminSidebar from "../Component/AdminSidebar";
 import Login from "../Pages/Login";
 import Dashboard from "../Component/AdminPanel/Dashboard";
-import CreateBlog from "./CreateBlog";
-import ProfilePage from "../Component/AdminPanel/ProfilePage";
-import AdminNews from "../Component/AdminPanel/AdminNews";
-import AdminBusiness from "../Component/AdminPanel/AdminBusiness";
-import AdminEntertainment from "../Component/AdminPanel/AdminEntertainment";
-import AdminSports from "../Component/AdminPanel/AdminSports";
-import Navbar from "../Component/AdminPanel/NavbarAdmin";
+
+
 
 const routeConfig = {
   Dashboard,
-  "Add Blog": CreateBlog,
-  "Profile Settings": ProfilePage,
-  News: AdminNews,
-  Sports: AdminSports,
-  Business: AdminBusiness,
-  Entertainment: AdminEntertainment,
+ 
 };
 
 function Admin() {

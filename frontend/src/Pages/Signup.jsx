@@ -32,18 +32,46 @@ function SignUpForm() {
             formData
           ),
         });
-      const data = await response.json()
+      
+        console.log(response)
+        console.log('FormData: ',formData)
 
       if (response.ok ) {
         toast.success("Registration successful", {
           id: notification,
         });
-        window.location.href = "/login";
-      } else {
-        toast.error(`${data.message}`, { id: notification });
+
+        const loginData = {
+          email: formData.email,
+          password: formData.password,
+        };
+  
+        // Automatically log the user in after registration
+        const loginResponse = await fetch(
+          `${apiBaseUrl}/api/v1/auth/login`,
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(loginData),
+          }
+        );
+  
+        if (loginResponse.ok) {
+          const resp = await loginResponse.json();
+          const { access_token, user } = resp.data;
+  
+          // Store access token and user data in localStorage
+          localStorage.setItem("accessToken", access_token);
+          localStorage.setItem("User", JSON.stringify(user));
+  
+          // Redirect to admin page after successful login
+          window.location.href = "/Admin";
+
+}      } else {
+        toast.error("Registration failed", { id: notification });
       }
     } catch (error) {
-      toast.error(`${data.message}`, { id: notification });
+      toast.error("An internal error occurred", { id: notification });
 
     }
   };
