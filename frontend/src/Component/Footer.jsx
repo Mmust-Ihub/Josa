@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import  {  useState } from "react";
 import { Link } from "react-router-dom";
 
 export default function Footer() {
@@ -54,7 +54,7 @@ export default function Footer() {
                 </li>
                 <li>
                   <a
-                    href="/admin"
+                    href="/Admin"
                     className=" transition-colors duration-300 hover:text-deep-purple-accent-200"
                   >
                     Admin

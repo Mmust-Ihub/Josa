@@ -14,6 +14,7 @@ const SingleBlogPage = () => {
   const [loading, setLoading] = useState(true);
   const [isBlog, setIsBlog] = useState(true);
   const [newTitle, setNewTitle] = useState('');
+  const [newHeadline, setNewHeadline] = useState('');
   const [newContent, setNewContent] = useState('');
   const [isEditing, setIsEditing] = useState(false);
 
@@ -102,37 +103,39 @@ const SingleBlogPage = () => {
   const handleSave = async (event) => {
     setIsEditing(false);
     toast.loading("posting your blog...");
-    const notification = toast.loading("posting your blog...");
+   
     event.preventDefault();
 
     const formData = new FormData();
     formData.append("title", newTitle);
     formData.append("content", newContent);
+    formData.append("headline", newHeadline);
+
 
     try {
 
 
       const response = await fetch(
-        // `${apiBaseUrl}/api/v1/admin/createblog`,
-        `${apiBaseUrl}/api/v1/admin/createpost`,
+        `${apiBaseUrl}/api/v1/admin/posts/update/${blog.slug}`,
         {
           method: "PUT",
           headers: {
+            'content-type': 'multipart/form-data',
             Authorization: "Bearer " + localStorage.getItem("accessToken"),
           },
           body: formData,
         }
       );
 
-      console.log(response)
+      console.log(formData.title)
       if (response?.ok) {
-        // toast.remove()
+        toast.dismiss()
         toast.success("Blog post updated successfully");
         setNewTitle("");
         setNewContent("")
 
       } else {
-        toast.remove()
+        toast.dismiss()
 
         toast.error("Failed to update blog post");
         console.error("Failed to update blog post");
@@ -143,9 +146,7 @@ const SingleBlogPage = () => {
       // }
       toast.remove()
 
-      toast.error("An error occurred", {
-        id: notification,
-      });
+      toast.error("An error occurred");
       console.error("An error occurred:", error);
     }
   };
@@ -169,6 +170,17 @@ const SingleBlogPage = () => {
           ) : (
             <h1 className="text-3xl font-bold mb-4">{blog.title}</h1>
           )}
+             {isEditing ? (
+            <ReactQuill
+              value={blog.headline} onChange={(e) => setNewHeadline(e.target.value)}
+              id='content'
+              name='content'
+              className="h-20 mb-4"
+            />
+          ) : (
+            <p className="text-gray-700 mb-6" dangerouslySetInnerHTML={{ __html: blog.headline }}></p>
+          )}
+       
           <div className="flex items-center text-gray-600 mb-4">
             <User size={16} className="mr-2" />
             <span className="mr-4">{blog.author}</span>
