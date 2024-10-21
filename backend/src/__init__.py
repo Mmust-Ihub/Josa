@@ -8,7 +8,7 @@ from src.auth.auth import auth
 from src.views.posts import posts
 from src.celery import celery_init_app
 from src.views.admin import admin
-from src.utils import utils
+# from src.utils import utils
 
 # from src.views.admin_profile import admin
 
@@ -34,7 +34,7 @@ def create_app(config="dev"):
 
     @app.before_request
     def before_any_request():
-        utils.create_uploads_dir(app=app)
+        # utils.create_uploads_dir(app=app)
         create_database(app=app)
 
     @app.route("/api/healthcheck")
