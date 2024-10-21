@@ -13,15 +13,15 @@ function Admin() {
   const [selectedItem, setSelectedItem] = useState("Dashboard");
   const [authenticated, setAuthenticated] = useState(true);
   const [open, setOpen] = useState(false);
-
+  const accessToken = localStorage.getItem("accessToken");
   useEffect(() => {
-    const accessToken = localStorage.getItem("accessToken");
+
 
     if (!accessToken) {
       setAuthenticated(false);
       window.location.href = "/login";
     }
-  }, []);
+  }, [accessToken]);
 
   const handleSidebarItemClick = (item) => {
     setSelectedItem(item);

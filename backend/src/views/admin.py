@@ -162,8 +162,13 @@ def check_task_status(task_id):
 
 
 @admin.route("/posts/delete/<string:slug>", methods=["DELETE"])
+@cross_origin()
+@jwt_required()
 def delete_a_post(slug):
     """An endpoint to delete a post based on the category"""
+    print(slug)
+    data = Post.query.filter_by(slug=slug).first()
+    print("This is the data ...")
     if delete_post(slug):
         return " ", 204
 
@@ -198,8 +203,10 @@ def update_admin_profile():
     admin_id = get_jwt_identity()
     data = request.form.to_dict(flat=True)
     file = request.files.get("image", "")
+    old_pass = data.get("old_password")
+    new_pass = data.get("new_password")
     admin = User.query.filter_by(id=admin_id).first()
-    if "old_password" in data and "new_password" in data:
+    if old_pass and new_pass:
         if not verify_password(data["old_password"], admin.password):
             return jsonify({"error": "invalid password. Try again"}), 401
         admin.password = data["new_password"]
