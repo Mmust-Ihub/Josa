@@ -46,7 +46,7 @@ class App extends React.Component {
           <Layout>
             <Routes>
               <Route path="/" element={<Homepage />} />
-              <Route path="/admin" element={<Admin />} />
+              <Route path="/Admin" element={<Admin />} />
               <Route path="/login" element={<LoginForm />} />
               <Route path="/josa/register" element={<SignUpForm />} />
               <Route path="/Admin/PreviewBlog" element={<PreviewBlog />} />

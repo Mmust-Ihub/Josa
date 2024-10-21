@@ -54,7 +54,7 @@ export default function Footer() {
                 </li>
                 <li>
                   <a
-                    href="/admin"
+                    href="/Admin"
                     className=" transition-colors duration-300 hover:text-deep-purple-accent-200"
                   >
                     Admin
