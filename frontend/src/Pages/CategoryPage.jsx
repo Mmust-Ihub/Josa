@@ -6,7 +6,7 @@ import Skeleton from '../Component/Skeleton';
 import LatestBlogs from '../Component/LatestBlogs'
 import NotFound from '../Component/NotFound';
 import pic from '/images/profile.png'
-
+import NewsNavBar from '../Component/NewsNavBar';
 
 
 
@@ -22,7 +22,7 @@ const CategoryPage = () => {
 
 
 
-
+console.log(category === 'news')
   useEffect(() => {
     window.scrollTo(0, 0);
 
@@ -55,7 +55,8 @@ const CategoryPage = () => {
 
   if (loading) {
     return (
-      <div className="container mx-auto px-4 py-8  ">
+      <div className="container mx-auto px-4 py-8 relative">
+       
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2">
             <Skeleton type="main" />
@@ -91,40 +92,52 @@ const CategoryPage = () => {
  
 
   return (
-    <div className="container mx-auto px-4 py-8 ">
+    <div className="container mx-auto px-4 my-0">
+      
       <h1 className="text-3xl font-bold text-gray-800 ">Main {category} </h1>
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2">
-          <MainNews
-              key={mainBlog.id}
-              category={category}
-              blog={mainBlog}
-            />
+          <MainNews key={mainBlog.id} category={category} blog={mainBlog} />
         </div>
         <div className="hidden lg:block">
           <LatestBlogs />
         </div>
       </div>
       <div className="mt-8">
-        <h2 className="text-2xl font-bold text-gray-800 mb-4">Other {category} News</h2>
+        <h2 className="text-2xl font-bold text-gray-800 mb-4">
+          Other {category} News
+        </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {otherBlogs.map((blog) => (
-            <Link  to={`/${category.toLowerCase()}/${blog.slug}`} key={blog.id}>
-            <div  className="bg-white shadow-lg rounded-lg overflow-hidden">
-              <img src={blog.image} alt={blog.title} className="w-full h-48 object-cover" />
-              <div className="p-4">
-                <h3 className="text-xl font-semibold text-gray-800 mb-2">{blog.title}</h3>
-                <p className="text-gray-600 mb-4 line-clamp-3">{blog.content}</p>
-                <div className="flex items-center text-sm text-gray-500">
-                  <img src={blog.author_image || pic} alt={blog.author} className="w-8 h-8 rounded-full mr-2" />
-                  <span>{blog.author}</span>
-                  <span className="mx-2">•</span>
-                  <span>{new Date(blog.published_on).toLocaleDateString()}</span>
+            <Link to={`/${category.toLowerCase()}/${blog.slug}`} key={blog.id}>
+              <div className="bg-white shadow-lg rounded-lg overflow-hidden">
+                <img
+                  src={blog.image}
+                  alt={blog.title}
+                  className="w-full h-48 object-cover"
+                />
+                <div className="p-4">
+                  <h3 className="text-xl font-semibold text-gray-800 mb-2">
+                    {blog.title}
+                  </h3>
+                  <p className="text-gray-600 mb-4 line-clamp-3">
+                    {blog.content}
+                  </p>
+                  <div className="flex items-center text-sm text-gray-500">
+                    <img
+                      src={blog.author_image || pic}
+                      alt={blog.author}
+                      className="w-8 h-8 rounded-full mr-2"
+                    />
+                    <span>{blog.author}</span>
+                    <span className="mx-2">•</span>
+                    <span>
+                      {new Date(blog.published_on).toLocaleDateString()}
+                    </span>
+                  </div>
                 </div>
               </div>
-            </div>
             </Link>
-            
           ))}
         </div>
       </div>
