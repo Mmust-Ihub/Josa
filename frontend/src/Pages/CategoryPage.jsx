@@ -45,7 +45,8 @@ const CategoryPage = () => {
 
   if (loading) {
     return (
-      <div className="container mx-auto px-4 py-8  ">
+      <div className="container mx-auto px-4 py-8 relative">
+       
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2">
             <Skeleton type="main" />
@@ -79,7 +80,8 @@ const CategoryPage = () => {
   const otherBlogs = blogs.slice(1);
 
   return (
-    <div className="container mx-auto px-4 py-8 ">
+    <div className="container mx-auto px-4 my-0">
+      
       <h1 className="text-3xl font-bold text-gray-800 ">Main {category} </h1>
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2">
