@@ -13,7 +13,7 @@ const MainNews = ({ category,blog }) => {
 
   const sanitizedSlug = DOMPurify.sanitize(blog.content, { ALLOWED_TAGS: [], ALLOWED_ATTR: [] });
 
-  const truncatedSlug = sanitizedSlug.split(' ').slice(0, 200).join(' ') + (sanitizedSlug.split(' ').length > 200 ? '...' : ''); 
+  const truncatedSlug = sanitizedSlug.split(' ').slice(0, 100).join(' ') + (sanitizedSlug.split(' ').length > 100 ? '...' : ''); 
    return (
     <div className="bg-white shadow-lg rounded-lg overflow-hidden  space-y-8">
       <img src={blog.image} alt={blog.title} className="w-full h-64 md:h-[350px] object-cover" />

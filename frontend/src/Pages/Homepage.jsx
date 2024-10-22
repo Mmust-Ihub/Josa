@@ -105,7 +105,7 @@ function Homepage() {
 
   return   (
     <div className=" overflow-x-hidden">
-      <div className="px-4 mx-auto sm:max-w-xl md:max-w-full lg:max-w-screen-xl md:px-20 lg:px-40 lg:py-12">
+      <div className="px-4 mx-auto sm:max-w-xl md:max-w-full lg:max-w-screen-xl md:px-10 lg:px-20 lg:py-4">
         <Toaster />
         <Helmet>
           <meta charset="UTF-8" />
