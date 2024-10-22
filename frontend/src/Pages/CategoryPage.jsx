@@ -1,14 +1,11 @@
-import { useState, useEffect } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { useState, useEffect } from "react";
+import { Link, useParams } from "react-router-dom";
 import MainNews from "../Component/MainsNews";
-import EmptyContainer from '../Component/EmptyContainer';
-import Skeleton from '../Component/Skeleton';
-import LatestBlogs from '../Component/LatestBlogs'
-import NotFound from '../Component/NotFound';
-import pic from '/images/profile.png'
-import NewsNavBar from '../Component/NewsNavBar';
-
-
+import EmptyContainer from "../Component/EmptyContainer";
+import Skeleton from "../Component/Skeleton";
+import LatestBlogs from "../Component/LatestBlogs";
+import NotFound from "../Component/NotFound";
+import pic from "/images/profile.png";
 
 const CategoryPage = () => {
   const { category } = useParams();
@@ -16,13 +13,8 @@ const CategoryPage = () => {
   const [loading, setLoading] = useState(true);
   const [isBlog, setIsBlog] = useState(true);
 
+  const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
 
-
-  const apiBaseUrl = import.meta.env.VITE_API_BASE_URL
-
-
-
-console.log(category === 'news')
   useEffect(() => {
     window.scrollTo(0, 0);
 
@@ -30,28 +22,26 @@ console.log(category === 'news')
       setLoading(true);
       try {
         await fetch(`${apiBaseUrl}/api/v1/user/${category}`)
-        .then((response) => {
-          if (response.status !== 200) {
-            setIsBlog(false); 
-            return null;
-          }
-          return response.json();
-        })
+          .then((response) => {
+            if (response.status !== 200) {
+              setIsBlog(false);
+              return null;
+            }
+            return response.json();
+          })
           .then((data) => {
             const valuesArray = Object.values(data);
             setBlogs(valuesArray);
-          })
+          });
       } catch (error) {
-        console.error('Error fetching category news:', error);
+        console.error("Error fetching category news:", error);
       } finally {
         setLoading(false);
       }
     };
 
     fetchData();
-
   }, [apiBaseUrl, category]);
-
 
   if (loading) {
     return (
@@ -88,8 +78,6 @@ console.log(category === 'news')
 
   const mainBlog = blogs[0];
   const otherBlogs = blogs.slice(1);
-
- 
 
   return (
     <div className="container mx-auto px-4 my-0">
@@ -131,9 +119,11 @@ console.log(category === 'news')
                     />
                     <span>{blog.author}</span>
                     <span className="mx-2">•</span>
-                    <span>
-                      {new Date(blog.published_on).toLocaleDateString()}
-                    </span>
+                    {blog.published_on && (
+                      <span>
+                        {new Date(blog.published_on).toLocaleDateString()}
+                      </span>
+                    )}
                   </div>
                 </div>
               </div>
