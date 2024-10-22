@@ -110,7 +110,7 @@ const CategoryPage = () => {
   return (
     <>
     <Toaster/>
-    <div className='md:m-20 m-10'>
+    <div className='md:m-10 m-5'>
       <h1 className="text-3xl font-bold mb-6 capitalize ">{category} Blogs</h1>
       <div className="grid gap-6">
         {blogs.map((blog) => (
@@ -216,13 +216,8 @@ const BlogCard = ({ blog, category, fetchData }) => {
               </button>
             </Link>
 
-            <button className="px-4 py-2 bg-yellow-500 text-white rounded hover:bg-yellow-600 flex items-center">
-              <Edit size={16} className="mr-2" /> Edit
-            </button>
-            <button
-              className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 flex items-center"
-              onClick={() => handleDelete()}
-            >
+           
+            <button className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 flex items-center" onClick={() => handleDelete()}>
               <Trash2 size={16} className="mr-2" /> Delete
             </button>
           </div>

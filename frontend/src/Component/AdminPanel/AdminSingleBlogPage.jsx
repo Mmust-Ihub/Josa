@@ -14,11 +14,9 @@ const SingleBlogPage = () => {
   const [loading, setLoading] = useState(true);
   const [isBlog, setIsBlog] = useState(true);
   const [newTitle, setNewTitle] = useState('');
-  const [newHeadline, setNewHeadline] = useState('');
   const [newContent, setNewContent] = useState('');
   const [isEditing, setIsEditing] = useState(false);
 
-  // Mock data for demonstration
   const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -109,7 +107,6 @@ const SingleBlogPage = () => {
     const formData = new FormData();
     formData.append("title", newTitle);
     formData.append("content", newContent);
-    formData.append("headline", newHeadline);
 
 
     try {
@@ -140,9 +137,7 @@ const SingleBlogPage = () => {
         console.error("Failed to update blog post");
       }
     } catch (error) {
-      // if () {
-
-      // }
+     
       toast.remove()
 
       toast.error("An error occurred");
@@ -153,10 +148,10 @@ const SingleBlogPage = () => {
   return (
     <>
       <Toaster />
-      <div className="max-w-4xl mx-auto mt-4">
+      <div className="max-w-5xl mx-auto mt-4 flex flex-col ">
 
-        <div className="mb-8">
-          <img src={blog.image} alt={blog.title} className="w-full h-64 object-cover rounded-lg shadow-md md:h-[350px]" />
+        <div className="">
+          <img src={blog.image} alt={blog.title} className="w-full h-64 object-cover rounded-lg shadow-md md:h-[350px] p-2" />
         </div>
         <div className="bg-white shadow-md rounded-lg p-6">
           {isEditing ? (
@@ -164,27 +159,18 @@ const SingleBlogPage = () => {
               type="text"
               value={newTitle}
               onChange={(e) => setNewTitle(e.target.value)}
-              className="text-3xl font-bold mb-4 w-full border-b-2 border-gray-300 focus:outline-none focus:border-blue-500"
+              className="text-3xl font-bold mb-4 w-full border-b-2 border-gray-300 focus:outline-none focus:border-blue-500 h-fit"
             />
           ) : (
             <h1 className="text-3xl font-bold mb-4">{blog.title}</h1>
           )}
-             {isEditing ? (
-            <ReactQuill
-              value={blog.headline} onChange={(e) => setNewHeadline(e.target.value)}
-              id='content'
-              name='content'
-              className="h-20 mb-4"
-            />
-          ) : (
-            <p className="text-gray-700 mb-6" dangerouslySetInnerHTML={{ __html: blog.headline }}></p>
-          )}
+        
        
-          <div className="flex items-center text-gray-600 mb-4">
+          <div className="flex items-center text-gray-600 mb-4 max-sm:flex-col max-sm:items-start">
             <User size={16} className="mr-2" />
             <span className="mr-4">{blog.author}</span>
             <Calendar size={16} className="mr-2" />
-            <span className="mr-4">{blog.createdAt}</span>
+            <span className="mr-4">{new Date(blog.published_on).toLocaleString()}</span>
             <Eye size={16} className="mr-2" />
             <span className="mr-4">{blog.views} views</span>
             <MessageSquare size={16} className="mr-2" />
@@ -195,7 +181,7 @@ const SingleBlogPage = () => {
               value={blog.content} onChange={(e) => setNewContent(e.target.value)}
               id='content'
               name='content'
-              className="h-20 mb-4"
+              className="h-fit mb-4"
             />
           ) : (
             <p className="text-gray-700 mb-6" dangerouslySetInnerHTML={{ __html: blog.content }}></p>
@@ -216,7 +202,7 @@ const SingleBlogPage = () => {
             </button>
           )}
         </div>
-        <div className="mt-8">
+        <div className="p-2">
           <h2 className="text-2xl font-bold mb-4">Comments</h2>
           {blog.comments.map((comment) => (
             <div key={comment.id} className="bg-white shadow-md rounded-lg p-4 mb-4">

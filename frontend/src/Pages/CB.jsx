@@ -13,6 +13,7 @@ const CreateBlogPage = () => {
   const [category, setCategory] = useState("news");
   const [image, setImage] = useState(null);
   const [previewImage, setPreviewImage] = useState(null);
+  const [disabled, setDisabled] = useState(false);
 
   useEffect(() => {
 
@@ -25,7 +26,9 @@ const CreateBlogPage = () => {
 
   const handleSubmit = async (event) => {
 
-    toast.loading("posting your blog...");
+    setDisabled(true)
+
+    const notification = toast.loading("posting your blog...");
    
     event.preventDefault();
 
@@ -52,10 +55,13 @@ const CreateBlogPage = () => {
         }
       );
 
-      console.log(response)
       if (response?.ok) {
         toast.dismiss();
-        toast.success("Blog post created successfully");
+        toast.success("Blog post created successfully", {
+          id: notification,
+        });
+
+        setDisabled(false)
 
         setTitle("");
         setHeadline("");
@@ -67,16 +73,22 @@ const CreateBlogPage = () => {
       } else {
         toast.dismiss();
 
-        toast.error("Failed to create blog post");
+        toast.error("Failed to create blog post", {
+          id: notification,
+        });
+        setDisabled(false)
+
         console.error("Failed to create blog post");
       }
     } catch (error) {
-      // if () {
+   
+      toast.dismiss()
+      setDisabled(false)
 
-      // }
-      toast.remove()
 
-      toast.error("An error occurred");
+      toast.error("Something went wrong", {
+        id: notification,
+      });
       console.error("An error occurred:", error);
     }
   };
@@ -172,7 +184,7 @@ const CreateBlogPage = () => {
             </div>
           )}
           <div className="flex justify-end space-x-4">
-            <button
+            {/* <button
               // onClick={() => {
               //   const noti = toast.loading(
               //     "Naviating to preview, your fields will be saved as draft..."
@@ -188,13 +200,14 @@ const CreateBlogPage = () => {
               //     });
               //   }, 2000);
               // }}
-              className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600"
+              className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600  "
             >
               Preview Blog
-            </button>
+            </button> */}
             <button
               onClick={handleSubmit}
               className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+              disabled={disabled}
             >
               Publish Blog
             </button>

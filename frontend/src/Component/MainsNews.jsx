@@ -10,8 +10,11 @@ import DOMPurify from 'dompurify'
 const MainNews = ({ category,blog }) => {
 
 
-  const sanitizedSlug = DOMPurify.sanitize(blog.headline, { ALLOWED_TAGS: [], ALLOWED_ATTR: [] });
-  return (
+
+  const sanitizedSlug = DOMPurify.sanitize(blog.content, { ALLOWED_TAGS: [], ALLOWED_ATTR: [] });
+
+  const truncatedSlug = sanitizedSlug.split(' ').slice(0, 100).join(' ') + (sanitizedSlug.split(' ').length > 100 ? '...' : ''); 
+   return (
     <div className="bg-white shadow-lg rounded-lg overflow-hidden  space-y-8">
       <img
         src={blog.image}
@@ -25,7 +28,7 @@ const MainNews = ({ category,blog }) => {
         >
           {blog.title}
         </Link>
-        <p className="mt-2 text-gray-600 line-clamp-3">{sanitizedSlug}</p>
+        <p className="mt-2 text-gray-600 line-clamp-3">{truncatedSlug}</p>
         <div className="mt-4 flex items-center">
           <img
             src={pic}
