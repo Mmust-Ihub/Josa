@@ -10,7 +10,7 @@ import DOMPurify from 'dompurify'
 const MainNews = ({ category,blog }) => {
 
 
-  const sanitizedSlug = DOMPurify.sanitize(blog.slug, { ALLOWED_TAGS: [], ALLOWED_ATTR: [] });
+  const sanitizedSlug = DOMPurify.sanitize(blog.headline, { ALLOWED_TAGS: [], ALLOWED_ATTR: [] });
   return (
     <div className="bg-white shadow-lg rounded-lg overflow-hidden  space-y-8">
       <img src={blog.image} alt={blog.title} className="w-full h-64 md:h-[350px] object-cover" />

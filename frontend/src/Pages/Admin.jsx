@@ -12,7 +12,7 @@ const routeConfig = {
 function Admin() {
   const [selectedItem, setSelectedItem] = useState("Dashboard");
   const [authenticated, setAuthenticated] = useState(true);
-  const [open, setOpen] = useState(false);
+
   const accessToken = localStorage.getItem("accessToken");
   useEffect(() => {
 
@@ -23,14 +23,7 @@ function Admin() {
     }
   }, [accessToken]);
 
-  const handleSidebarItemClick = (item) => {
-    setSelectedItem(item);
-    setOpen(false);
-  };
-
-  const handleSideBar = () => {
-    setOpen(!open);
-  };
+ 
 
   return authenticated ? (
     <div className="w-full overflow-x-hidden flex items-center mx-auto">  

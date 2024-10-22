@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useState, useEffect } from "react";
 import { User, Mail, Lock, LockOpen } from "lucide-react";
 
