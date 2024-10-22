@@ -142,7 +142,7 @@ def get_brief_home_news(category, page, per_page):
                     "id": post.id,
                     "title": post.title,
                     "slug": post.slug,
-                    "headline": post.headline,
+                    "content": post.content,
                     "image": post.image,
                     "author": get_the_user_based_on_author_id(post.user_id),
                     "published_on": post.date_created,
@@ -173,7 +173,7 @@ def get_all_posts_with_category(category) -> list:
                 "id": post.id,
                 "title": post.title,
                 "slug": post.slug,
-                "headline": post.headline,
+                "content": post.content,
                 "image": post.image,
                 "published_on": post.date_created,
             }
