@@ -203,9 +203,7 @@ const BlogCard = ({ blog, category, fetchData }) => {
               </button>
             </Link>
 
-            <button className="px-4 py-2 bg-yellow-500 text-white rounded hover:bg-yellow-600 flex items-center">
-              <Edit size={16} className="mr-2" /> Edit
-            </button>
+           
             <button className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 flex items-center" onClick={() => handleDelete()}>
               <Trash2 size={16} className="mr-2" /> Delete
             </button>
