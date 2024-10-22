@@ -10,15 +10,18 @@ import DOMPurify from 'dompurify'
 const MainNews = ({ category,blog }) => {
 
 
-  const sanitizedSlug = DOMPurify.sanitize(blog.headline, { ALLOWED_TAGS: [], ALLOWED_ATTR: [] });
-  return (
+
+  const sanitizedSlug = DOMPurify.sanitize(blog.content, { ALLOWED_TAGS: [], ALLOWED_ATTR: [] });
+
+  const truncatedSlug = sanitizedSlug.split(' ').slice(0, 200).join(' ') + (sanitizedSlug.split(' ').length > 200 ? '...' : ''); 
+   return (
     <div className="bg-white shadow-lg rounded-lg overflow-hidden  space-y-8">
       <img src={blog.image} alt={blog.title} className="w-full h-64 md:h-[350px] object-cover" />
       <div className="p-6">
         <Link to={`/${category}/${blog.slug}`} className="text-2xl font-bold text-gray-800 hover:text-blue-600 transition duration-300 ease-in-out">
           {blog.title}
         </Link>
-        <p className="mt-2 text-gray-600 line-clamp-3">{sanitizedSlug}</p>
+        <p className="mt-2 text-gray-600 line-clamp-3">{truncatedSlug}</p>
         <div className="mt-4 flex items-center">
           <img src={ pic} alt={blog.author} className="w-10 h-10 rounded-full mr-4" />
           <div>
