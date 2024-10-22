@@ -1,4 +1,4 @@
-import  {  useState } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 
 export default function Footer() {
@@ -9,7 +9,7 @@ export default function Footer() {
     e.preventDefault();
 
     window.open(
-      `mailto:josammust@gmail.com?subject=Message from ${name}&body=${message}`
+      `mailto:mmustjournalismstudentsassocia@gmail.com?subject=Message from ${name}&body=${message}`
     );
   };
   return (
@@ -69,23 +69,23 @@ export default function Footer() {
                   <p className="">
                     Phone No:
                     <a
-                      href="tel:850-123-5021"
+                      href="tel:0719130153"
                       className=" transition-colors duration-300 hover:text-deep-purple-accent-200"
                     >
                       {" "}
-                      850-123-5021
+                      0719130153
                     </a>
                   </p>
                 </li>
                 <li>
-                  <p className="">
+                  <p className="text-sm truncate">
                     E-mail:
                     <a
-                      href="mailto:josammust@gmail.com"
+                      href="mailto:mmustjournalismstudentsassocia@gmail.com"
                       className=" transition-colors duration-300 hover:text-deep-purple-accent-200"
                     >
                       {" "}
-                      josammust@gmail.com
+                      mmustjournalismstudentsassocia@gmail.com
                     </a>
                   </p>
                 </li>
@@ -107,29 +107,10 @@ export default function Footer() {
             </div>
             <div>
               <p className="font-bold tracking-wide ">Social Media</p>
-
               <div className="flex items-center mt-1 space-x-3">
                 <a
                   href="/"
-                  className=" transition-colors duration-300 hover:text-purple-500"
-                >
-                  <Link
-                    to="https://instagram.com/mmust_josa?igshid=OGY3MTU3OGY1Mw=="
-                    target="_blank"
-                  >
-                    <svg
-                      viewBox="0 0 30 30"
-                      fill="currentColor"
-                      className="h-6"
-                    >
-                      <circle cx="15" cy="15" r="4"></circle>
-                      <path d="M19.999,3h-10C6.14,3,3,6.141,3,10.001v10C3,23.86,6.141,27,10.001,27h10C23.86,27,27,23.859,27,19.999v-10   C27,6.14,23.859,3,19.999,3z M15,21c-3.309,0-6-2.691-6-6s2.691-6,6-6s6,2.691,6,6S18.309,21,15,21z M22,9c-0.552,0-1-0.448-1-1   c0-0.552,0.448-1,1-1s1,0.448,1,1C23,8.552,22.552,9,22,9z"></path>
-                    </svg>
-                  </Link>
-                </a>
-                <a
-                  href="/"
-                  className=" transition-colors duration-300 hover:text-purple-500"
+                  className=" transition-colors duration-300 hover:text-gray-300"
                 >
                   <Link
                     to="https://youtube.com/@MMUSTJOURNALISMSTUDENTSASSOCIA?si=G7xSxci9J2zWtcDN"
@@ -147,7 +128,7 @@ export default function Footer() {
                 </a>
                 <a
                   href="/"
-                  className="transition-colors duration-300 hover:text-purple-500"
+                  className="transition-colors duration-300 hover:text-gray-300"
                 >
                   <Link
                     to="https://www.facebook.com/profile.php?id=100086633626518"
@@ -163,18 +144,18 @@ export default function Footer() {
                   </Link>
                 </a>
               </div>
-              <p className="mt-4 text-sm ">MMUST JOSA DIGITAL NEWS.</p>
+              <p className="mt-4 text-sm font-bold">MMUST JOSA DIGITAL NEWS.</p>
             </div>
           </div>
-          <div className="mx-10 md:max-w-md lg:col-span-2">
-            <span className="text-base font-bold tracking-wide ">
+          <div className="md:mx-10 md:max-w-md lg:col-span-2">
+            <span className="text-sm font-semibold tracking-wide ">
               Message Us
             </span>
             <form
               className="block mt-4 "
               onSubmit={handleSubmit}
               // method="post"
-              // action={`mailto:https://josammust@gmail.com?subject=Message from ${name}&body=${message}`}
+              // action={`mailto:https://mmustjournalismstudentsassocia@gmail.com?subject=Message from ${name}&body=${message}`}
               // encType="multipart/form-data"
             >
               {/* <form > */}

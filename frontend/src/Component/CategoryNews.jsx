@@ -15,7 +15,10 @@ const CategoryNews= ({ category, blogs }) => {
     <div className="bg-white shadow-lg rounded-lg overflow-hidden p-6 mt-8 space-y-8">
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-2xl font-bold text-gray-800">{category}</h2>
-        <Link to={`/${category.toLowerCase()}`} className="text-blue-600 hover:text-blue-800 flex items-center">
+        <Link
+          to={`/${category.toLowerCase()}`}
+          className="text-blue-600 hover:text-blue-800 flex items-center"
+        >
           See More <ArrowRight size={16} className="ml-1" />
         </Link>
       </div>

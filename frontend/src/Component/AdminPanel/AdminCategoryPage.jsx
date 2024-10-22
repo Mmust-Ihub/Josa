@@ -110,7 +110,7 @@ const CategoryPage = () => {
   return (
     <>
     <Toaster/>
-    <div className='md:m-20 m-10'>
+    <div className='md:m-10 m-5'>
       <h1 className="text-3xl font-bold mb-6 capitalize ">{category} Blogs</h1>
       <div className="grid gap-6">
         {blogs.map((blog) => (
@@ -179,15 +179,28 @@ const BlogCard = ({ blog, category, fetchData }) => {
     <div className="bg-white shadow-md rounded-lg overflow-hidden  ">
       <div className="md:flex">
         <div className="md:flex-shrink-0">
-          <img className="h-48 w-full object-cover md:w-96" src={blog.image} alt={blog.title} />
+          <img
+            className="h-48 w-full object-cover md:w-96"
+            src={blog.image}
+            alt={blog.title}
+          />
         </div>
         <div className="p-8">
-          <div className="uppercase tracking-wide text-sm text-indigo-500 font-semibold">{blog.author}</div>
-          <Link className="block mt-1 text-lg leading-tight font-medium text-black hover:underline" to={`/Admin/${category.toLowerCase()}/${blog.slug}`} >
+          <div className="uppercase tracking-wide text-sm text-indigo-500 font-semibold">
+            {blog.author}
+          </div>
+          <Link
+            className="block mt-1 text-lg leading-tight font-medium text-black hover:underline"
+            to={`/Admin/${category.toLowerCase()}/${blog.slug}`}
+          >
             {blog.title}
           </Link>
 
-          <p className="mt-2 text-gray-500">Created on: {new Date(blog.published_on).toLocaleDateString()}</p>
+          {blog.published_on && (
+            <p className="mt-2 text-gray-500">
+              Created on: {new Date(blog.published_on).toLocaleDateString()}
+            </p>
+          )}
           {/* <div className="mt-4 flex items-center">
             <span className="flex items-center text-sm text-gray-500 mr-4">
               <Eye size={16} className="mr-1" /> {blog.views}
@@ -197,7 +210,7 @@ const BlogCard = ({ blog, category, fetchData }) => {
             </span>
           </div> */}
           <div className="mt-4 flex space-x-2">
-            <Link to={`/Admin/${category.toLowerCase()}/${blog.slug}`} >
+            <Link to={`/Admin/${category.toLowerCase()}/${blog.slug}`}>
               <button className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 flex items-center">
                 <Eye size={16} className="mr-2" /> View
               </button>

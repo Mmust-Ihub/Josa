@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { useState, useEffect } from "react";
+import { Link, useParams } from "react-router-dom";
 import MainNews from "../Component/MainsNews";
 import EmptyContainer from '../Component/EmptyContainer';
 import Skeleton from '../Component/Skeleton';
@@ -18,12 +18,7 @@ const CategoryPage = () => {
   const [loading, setLoading] = useState(true);
   const [isBlog, setIsBlog] = useState(true);
 
-
-
-  const apiBaseUrl = import.meta.env.VITE_API_BASE_URL
-
-
-
+  const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -32,28 +27,26 @@ const CategoryPage = () => {
       setLoading(true);
       try {
         await fetch(`${apiBaseUrl}/api/v1/user/${category}`)
-        .then((response) => {
-          if (response.status !== 200) {
-            setIsBlog(false); 
-            return null;
-          }
-          return response.json();
-        })
+          .then((response) => {
+            if (response.status !== 200) {
+              setIsBlog(false);
+              return null;
+            }
+            return response.json();
+          })
           .then((data) => {
             const valuesArray = Object.values(data);
             setBlogs(valuesArray);
-          })
+          });
       } catch (error) {
-        console.error('Error fetching category news:', error);
+        console.error("Error fetching category news:", error);
       } finally {
         setLoading(false);
       }
     };
 
     fetchData();
-
   }, [apiBaseUrl, category]);
-
 
   if (loading) {
     return (
@@ -90,18 +83,12 @@ const CategoryPage = () => {
   const mainBlog = blogs[0];
   const otherBlogs = blogs.slice(1);
 
- 
-
   return (
     <div className="container mx-auto px-4 py-8 ">
       <h1 className="text-3xl font-bold text-gray-800 ">Main {category} </h1>
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2">
-          <MainNews
-              key={mainBlog.id}
-              category={category}
-              blog={mainBlog}
-            />
+          <MainNews key={mainBlog.id} category={category} blog={mainBlog} />
         </div>
         <div className="hidden lg:block">
           <LatestBlogs />
@@ -132,7 +119,7 @@ const CategoryPage = () => {
                   <span>{new Date(blog.published_on).toLocaleDateString()}</span>
                 </div>
               </div>
-            </div>
+              </div>
             </Link>
             )
             
