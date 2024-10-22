@@ -25,6 +25,7 @@ import SingleBlogPage from "./Pages/SingleBlogPage";
 const Layout = ({ children }) => {
   const location = useLocation();
   const isAdminRoute = location.pathname.startsWith("/Admin");
+  const isNews = location.pathname.startsWith("/news");
 
   return (
     <>
@@ -32,7 +33,7 @@ const Layout = ({ children }) => {
         {/* Conditionally render AdminNavbar for admin pages, otherwise render Navbar */}
         {isAdminRoute ? <NavbarAdmin /> : <Navbar />}
       </div>
-      <main className="flex-grow">{children}</main>
+      <main className={`flex-grow mt-10 ${isNews ? 'mt-20': ''}`}>{children}</main>
       <Footer />
     </>
   );
@@ -53,6 +54,7 @@ class App extends React.Component {
               <Route path="/Admin/profile" element={<ProfilePage />} />
               <Route path="/Admin/CreateBlog" element={<CB />} />
               <Route path="/:category" element={<CategoryPage />} />
+              {/* <Route path="/news/:category" element={<CategoryPage />} /> */}
               <Route path="/Admin/:category" element={<AdminCategoryPage />} />
               <Route path="/:category/:slug" element={<SingleBlogPage />} />
               <Route path="/Admin/:category/:slug" element={<AdminSingleBlogPage />} />
