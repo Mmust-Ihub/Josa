@@ -127,7 +127,6 @@ const SingleBlogPage = () => {
         }
       );
 
-      console.log(formData.title)
       if (response?.ok) {
         toast.dismiss()
         toast.success("Blog post updated successfully");

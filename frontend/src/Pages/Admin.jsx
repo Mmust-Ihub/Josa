@@ -13,14 +13,15 @@ function Admin() {
   const [selectedItem, setSelectedItem] = useState("Dashboard");
   const [authenticated, setAuthenticated] = useState(true);
 
+  const accessToken = localStorage.getItem("accessToken");
   useEffect(() => {
-    const accessToken = localStorage.getItem("accessToken");
+
 
     if (!accessToken) {
       setAuthenticated(false);
       window.location.href = "/login";
     }
-  }, []);
+  }, [accessToken]);
 
  
 

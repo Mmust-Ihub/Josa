@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import { useState, useEffect } from 'react';
+import { useState, useEffect,useCallback } from 'react';
 
 import { useParams, Link } from 'react-router-dom';
 import { Eye, MessageSquare, Trash2, Edit } from 'lucide-react';
@@ -35,43 +35,43 @@ const CategoryPage = () => {
   // Mock data for demonstration
 
   
+  const fetchData = useCallback(async () => {
+    setLoading(true);
+    try {
+      await fetch(`${apiBaseUrl}/api/v1/admin/posts/${category}`, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ` + localStorage.getItem("accessToken"),
+        },
 
+      })
+        .then((response) => {
+          if (response.status !== 200) {
+            setIsBlog(false);
+            return null;
+          }
+          return response.json();
+        })
+        .then((data) => {
+          const valuesArray = Object.values(data);
+
+          setBlogs(valuesArray);
+        })
+    } catch (error) {
+      console.error('Error fetching category news:', error);
+    } finally {
+      setLoading(false);
+    }
+  },[apiBaseUrl, category])
 
   useEffect(() => {
     window.scrollTo(0, 0);
 
-    const fetchData = async () => {
-      setLoading(true);
-      try {
-        await fetch(`${apiBaseUrl}/api/v1/admin/posts/${category}`, {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ` + localStorage.getItem("accessToken"),
-          },
-
-        })
-          .then((response) => {
-            if (response.status !== 200) {
-              setIsBlog(false);
-              return null;
-            }
-            return response.json();
-          })
-          .then((data) => {
-            const valuesArray = Object.values(data);
-
-            setBlogs(valuesArray);
-          })
-      } catch (error) {
-        console.error('Error fetching category news:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
+   
 
     fetchData();
 
-  }, [apiBaseUrl, category]);
+  }, [fetchData]);
 
  
 
@@ -114,7 +114,7 @@ const CategoryPage = () => {
       <h1 className="text-3xl font-bold mb-6 capitalize ">{category} Blogs</h1>
       <div className="grid gap-6">
         {blogs.map((blog) => (
-          <BlogCard key={blog.id} blog={blog} category={category} />
+          <BlogCard key={blog.id} blog={blog} category={category} fetchData={fetchData} />
         ))}
       </div>
     </div>
@@ -122,8 +122,11 @@ const CategoryPage = () => {
   );
 };
 
-const BlogCard = ({ blog, category }) => {
+const BlogCard = ({ blog, category, fetchData }) => {
   const apiBaseUrl = import.meta.env.VITE_API_BASE_URL
+
+
+  
 
 
   const handleDelete = () => {
@@ -151,9 +154,14 @@ const BlogCard = ({ blog, category }) => {
               if (response?.ok) {
                 Swal.fire('Deleted!', 'Your file has been deleted.', 'success');
 
+                fetchData()
+
               }
               return response.json();
             })
+
+
+
     
         } catch (error) {
     
