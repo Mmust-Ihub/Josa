@@ -19,6 +19,7 @@ function Homepage() {
 
  
   useEffect(() => {
+    window.scrollTo(0, 0);
     const fetchData = async () => {
       try {
         const latestResponse = await fetch(

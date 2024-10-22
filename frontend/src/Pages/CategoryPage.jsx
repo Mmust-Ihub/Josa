@@ -103,7 +103,7 @@ const CategoryPage = () => {
 
              // Sanitize and truncate blog content to 100 words
           const sanitizedSlug = DOMPurify.sanitize(blog.content, { ALLOWED_TAGS: [], ALLOWED_ATTR: [] });
-          const truncatedSlug = sanitizedSlug.split(' ').slice(0, 100).join(' ') + (sanitizedSlug.split(' ').length > 100 ? '...' : '');
+          const truncatedSlug = sanitizedSlug.split(' ').slice(0, 10).join(' ') + (sanitizedSlug.split(' ').length > 10 ? '...' : '');
 
           const truncatedTitle = blog.title.split(' ').slice(0,5).join(' ') + (blog.title.split(' ').length > 5 ? '...' : '')
 
@@ -113,7 +113,7 @@ const CategoryPage = () => {
               <img src={blog.image} alt={blog.title} className="w-full h-48 object-cover" />
               <div className="p-4">
                 <h3 className="text-xl font-semibold text-gray-800 mb-2">{truncatedTitle}</h3>
-                <p className="text-gray-600 mb-4 line-clamp-3">{truncatedSlug}</p>
+                <p className="text-gray-600 line-clamp-3">{truncatedSlug}</p>
                 <div className="flex items-center text-sm text-gray-500">
                   <img src={blog.author_image || pic} alt={blog.author} className="w-8 h-8 rounded-full mr-2" />
                   <span>{blog.author}</span>
