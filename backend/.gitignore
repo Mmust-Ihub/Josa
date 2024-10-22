@@ -13,3 +13,4 @@ test.py
 *.sqlite
 .flaskenv
 .env.*
+rough.py
