@@ -5,6 +5,7 @@ from typing import Optional, final, Union
 from datetime import datetime
 from hashlib import md5
 from dataclasses import dataclass
+from slugify import slugify
 
 from src.utils.errors import JosaException
 from src.utils.password import hash_pwd, verify_password
@@ -147,11 +148,8 @@ class Post(db.Model, Helper):
 
     def __post_init__(self) -> None:
         if not self.slug:
-            self.slug = self.generate_slug(self.title)
+            self.slug = slugify(self.title)
         self.save_to_db()
-
-    def generate_slug(self, title: str):
-        return title.lower().replace(" ", "-").replace(",", "")
 
     @classmethod
     def paginate(cls, page: Optional[int] = PAGE, per_page: Optional[int] = PER_PAGE):
